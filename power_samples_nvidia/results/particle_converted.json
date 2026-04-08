@@ -1,0 +1,1026 @@
+{
+  "gpu": 0,
+  "workload": "particle",
+  "num_particles": 65536,
+  "power_sample_period_ms": 5,
+  "frequency_sweep_stride": 15,
+  "runs_per_frequency": 20,
+  "results": [
+    {
+      "requested_freq_mhz": 2100,
+      "avg_measured_freq_mhz": 1965,
+      "avg_power_w": 186.383,
+      "avg_execution_ms": 21.069,
+      "repeats": 100,
+      "monitor_samples": 47
+    },
+    {
+      "requested_freq_mhz": 2085,
+      "avg_measured_freq_mhz": 1963.82,
+      "avg_power_w": 190.804,
+      "avg_execution_ms": 21.0804,
+      "repeats": 100,
+      "monitor_samples": 51
+    },
+    {
+      "requested_freq_mhz": 2070,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.02,
+      "avg_execution_ms": 21.2129,
+      "repeats": 100,
+      "monitor_samples": 50
+    },
+    {
+      "requested_freq_mhz": 2055,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.043,
+      "avg_execution_ms": 21.2118,
+      "repeats": 100,
+      "monitor_samples": 47
+    },
+    {
+      "requested_freq_mhz": 2040,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.447,
+      "avg_execution_ms": 21.2129,
+      "repeats": 100,
+      "monitor_samples": 47
+    },
+    {
+      "requested_freq_mhz": 2025,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.146,
+      "avg_execution_ms": 21.213,
+      "repeats": 100,
+      "monitor_samples": 48
+    },
+    {
+      "requested_freq_mhz": 2010,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.75,
+      "avg_execution_ms": 21.212,
+      "repeats": 100,
+      "monitor_samples": 48
+    },
+    {
+      "requested_freq_mhz": 1995,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.878,
+      "avg_execution_ms": 21.213,
+      "repeats": 100,
+      "monitor_samples": 49
+    },
+    {
+      "requested_freq_mhz": 1980,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.633,
+      "avg_execution_ms": 21.2127,
+      "repeats": 100,
+      "monitor_samples": 49
+    },
+    {
+      "requested_freq_mhz": 1965,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 192.292,
+      "avg_execution_ms": 21.2114,
+      "repeats": 100,
+      "monitor_samples": 48
+    },
+    {
+      "requested_freq_mhz": 1950,
+      "avg_measured_freq_mhz": 1950,
+      "avg_power_w": 191.76,
+      "avg_execution_ms": 21.213,
+      "repeats": 100,
+      "monitor_samples": 50
+    },
+    {
+      "requested_freq_mhz": 1935,
+      "avg_measured_freq_mhz": 1935,
+      "avg_power_w": 187.4,
+      "avg_execution_ms": 21.3776,
+      "repeats": 100,
+      "monitor_samples": 50
+    },
+    {
+      "requested_freq_mhz": 1920,
+      "avg_measured_freq_mhz": 1920,
+      "avg_power_w": 184.216,
+      "avg_execution_ms": 21.5432,
+      "repeats": 100,
+      "monitor_samples": 51
+    },
+    {
+      "requested_freq_mhz": 1905,
+      "avg_measured_freq_mhz": 1905,
+      "avg_power_w": 179.255,
+      "avg_execution_ms": 21.7148,
+      "repeats": 100,
+      "monitor_samples": 51
+    },
+    {
+      "requested_freq_mhz": 1890,
+      "avg_measured_freq_mhz": 1890,
+      "avg_power_w": 176.208,
+      "avg_execution_ms": 21.887,
+      "repeats": 100,
+      "monitor_samples": 53
+    },
+    {
+      "requested_freq_mhz": 1875,
+      "avg_measured_freq_mhz": 1875,
+      "avg_power_w": 172.717,
+      "avg_execution_ms": 22.0618,
+      "repeats": 100,
+      "monitor_samples": 53
+    },
+    {
+      "requested_freq_mhz": 1860,
+      "avg_measured_freq_mhz": 1860,
+      "avg_power_w": 169.5,
+      "avg_execution_ms": 22.2408,
+      "repeats": 100,
+      "monitor_samples": 52
+    },
+    {
+      "requested_freq_mhz": 1845,
+      "avg_measured_freq_mhz": 1845,
+      "avg_power_w": 168.537,
+      "avg_execution_ms": 22.4219,
+      "repeats": 100,
+      "monitor_samples": 54
+    },
+    {
+      "requested_freq_mhz": 1830,
+      "avg_measured_freq_mhz": 1830,
+      "avg_power_w": 165.275,
+      "avg_execution_ms": 22.6049,
+      "repeats": 100,
+      "monitor_samples": 51
+    },
+    {
+      "requested_freq_mhz": 1815,
+      "avg_measured_freq_mhz": 1815,
+      "avg_power_w": 161.412,
+      "avg_execution_ms": 22.7926,
+      "repeats": 100,
+      "monitor_samples": 51
+    },
+    {
+      "requested_freq_mhz": 1800,
+      "avg_measured_freq_mhz": 1800,
+      "avg_power_w": 160.377,
+      "avg_execution_ms": 22.9775,
+      "repeats": 100,
+      "monitor_samples": 53
+    },
+    {
+      "requested_freq_mhz": 1785,
+      "avg_measured_freq_mhz": 1785,
+      "avg_power_w": 156.92,
+      "avg_execution_ms": 23.1704,
+      "repeats": 100,
+      "monitor_samples": 50
+    },
+    {
+      "requested_freq_mhz": 1770,
+      "avg_measured_freq_mhz": 1770,
+      "avg_power_w": 154.111,
+      "avg_execution_ms": 23.3663,
+      "repeats": 100,
+      "monitor_samples": 54
+    },
+    {
+      "requested_freq_mhz": 1755,
+      "avg_measured_freq_mhz": 1755,
+      "avg_power_w": 153.038,
+      "avg_execution_ms": 23.5674,
+      "repeats": 100,
+      "monitor_samples": 53
+    },
+    {
+      "requested_freq_mhz": 1740,
+      "avg_measured_freq_mhz": 1740,
+      "avg_power_w": 151.296,
+      "avg_execution_ms": 23.7706,
+      "repeats": 100,
+      "monitor_samples": 54
+    },
+    {
+      "requested_freq_mhz": 1725,
+      "avg_measured_freq_mhz": 1725,
+      "avg_power_w": 149.093,
+      "avg_execution_ms": 23.9768,
+      "repeats": 100,
+      "monitor_samples": 54
+    },
+    {
+      "requested_freq_mhz": 1710,
+      "avg_measured_freq_mhz": 1710,
+      "avg_power_w": 147.737,
+      "avg_execution_ms": 24.1883,
+      "repeats": 100,
+      "monitor_samples": 57
+    },
+    {
+      "requested_freq_mhz": 1695,
+      "avg_measured_freq_mhz": 1695,
+      "avg_power_w": 146.278,
+      "avg_execution_ms": 24.4022,
+      "repeats": 100,
+      "monitor_samples": 54
+    },
+    {
+      "requested_freq_mhz": 1680,
+      "avg_measured_freq_mhz": 1680,
+      "avg_power_w": 143.764,
+      "avg_execution_ms": 24.6218,
+      "repeats": 100,
+      "monitor_samples": 55
+    },
+    {
+      "requested_freq_mhz": 1665,
+      "avg_measured_freq_mhz": 1665,
+      "avg_power_w": 142.75,
+      "avg_execution_ms": 24.8415,
+      "repeats": 100,
+      "monitor_samples": 56
+    },
+    {
+      "requested_freq_mhz": 1650,
+      "avg_measured_freq_mhz": 1650,
+      "avg_power_w": 141.695,
+      "avg_execution_ms": 25.0688,
+      "repeats": 100,
+      "monitor_samples": 59
+    },
+    {
+      "requested_freq_mhz": 1635,
+      "avg_measured_freq_mhz": 1635,
+      "avg_power_w": 140.639,
+      "avg_execution_ms": 25.2995,
+      "repeats": 100,
+      "monitor_samples": 61
+    },
+    {
+      "requested_freq_mhz": 1620,
+      "avg_measured_freq_mhz": 1620,
+      "avg_power_w": 139.763,
+      "avg_execution_ms": 25.5346,
+      "repeats": 100,
+      "monitor_samples": 59
+    },
+    {
+      "requested_freq_mhz": 1605,
+      "avg_measured_freq_mhz": 1605,
+      "avg_power_w": 137.95,
+      "avg_execution_ms": 25.773,
+      "repeats": 100,
+      "monitor_samples": 60
+    },
+    {
+      "requested_freq_mhz": 1590,
+      "avg_measured_freq_mhz": 1590,
+      "avg_power_w": 136.932,
+      "avg_execution_ms": 26.0152,
+      "repeats": 100,
+      "monitor_samples": 59
+    },
+    {
+      "requested_freq_mhz": 1575,
+      "avg_measured_freq_mhz": 1575,
+      "avg_power_w": 135.966,
+      "avg_execution_ms": 26.265,
+      "repeats": 100,
+      "monitor_samples": 59
+    },
+    {
+      "requested_freq_mhz": 1560,
+      "avg_measured_freq_mhz": 1560,
+      "avg_power_w": 134.15,
+      "avg_execution_ms": 26.5179,
+      "repeats": 100,
+      "monitor_samples": 60
+    },
+    {
+      "requested_freq_mhz": 1545,
+      "avg_measured_freq_mhz": 1545,
+      "avg_power_w": 133.051,
+      "avg_execution_ms": 26.7762,
+      "repeats": 100,
+      "monitor_samples": 59
+    },
+    {
+      "requested_freq_mhz": 1530,
+      "avg_measured_freq_mhz": 1530,
+      "avg_power_w": 133.121,
+      "avg_execution_ms": 27.0388,
+      "repeats": 100,
+      "monitor_samples": 58
+    },
+    {
+      "requested_freq_mhz": 1515,
+      "avg_measured_freq_mhz": 1515,
+      "avg_power_w": 132.197,
+      "avg_execution_ms": 27.3056,
+      "repeats": 100,
+      "monitor_samples": 61
+    },
+    {
+      "requested_freq_mhz": 1500,
+      "avg_measured_freq_mhz": 1500,
+      "avg_power_w": 130.742,
+      "avg_execution_ms": 27.5724,
+      "repeats": 100,
+      "monitor_samples": 62
+    },
+    {
+      "requested_freq_mhz": 1485,
+      "avg_measured_freq_mhz": 1485,
+      "avg_power_w": 130.048,
+      "avg_execution_ms": 27.8505,
+      "repeats": 100,
+      "monitor_samples": 63
+    },
+    {
+      "requested_freq_mhz": 1470,
+      "avg_measured_freq_mhz": 1470,
+      "avg_power_w": 129.435,
+      "avg_execution_ms": 28.1345,
+      "repeats": 100,
+      "monitor_samples": 62
+    },
+    {
+      "requested_freq_mhz": 1455,
+      "avg_measured_freq_mhz": 1455,
+      "avg_power_w": 127.692,
+      "avg_execution_ms": 28.4264,
+      "repeats": 100,
+      "monitor_samples": 65
+    },
+    {
+      "requested_freq_mhz": 1440,
+      "avg_measured_freq_mhz": 1440,
+      "avg_power_w": 126.578,
+      "avg_execution_ms": 28.7218,
+      "repeats": 100,
+      "monitor_samples": 64
+    },
+    {
+      "requested_freq_mhz": 1425,
+      "avg_measured_freq_mhz": 1425,
+      "avg_power_w": 126.631,
+      "avg_execution_ms": 29.0131,
+      "repeats": 100,
+      "monitor_samples": 65
+    },
+    {
+      "requested_freq_mhz": 1410,
+      "avg_measured_freq_mhz": 1410,
+      "avg_power_w": 125.615,
+      "avg_execution_ms": 29.3121,
+      "repeats": 100,
+      "monitor_samples": 65
+    },
+    {
+      "requested_freq_mhz": 1395,
+      "avg_measured_freq_mhz": 1395,
+      "avg_power_w": 124.831,
+      "avg_execution_ms": 29.6187,
+      "repeats": 100,
+      "monitor_samples": 65
+    },
+    {
+      "requested_freq_mhz": 1380,
+      "avg_measured_freq_mhz": 1380,
+      "avg_power_w": 123.985,
+      "avg_execution_ms": 29.9324,
+      "repeats": 100,
+      "monitor_samples": 68
+    },
+    {
+      "requested_freq_mhz": 1365,
+      "avg_measured_freq_mhz": 1365,
+      "avg_power_w": 123.257,
+      "avg_execution_ms": 30.2521,
+      "repeats": 100,
+      "monitor_samples": 70
+    },
+    {
+      "requested_freq_mhz": 1350,
+      "avg_measured_freq_mhz": 1350,
+      "avg_power_w": 122.93,
+      "avg_execution_ms": 30.5781,
+      "repeats": 100,
+      "monitor_samples": 71
+    },
+    {
+      "requested_freq_mhz": 1335,
+      "avg_measured_freq_mhz": 1335,
+      "avg_power_w": 122.676,
+      "avg_execution_ms": 30.9115,
+      "repeats": 100,
+      "monitor_samples": 71
+    },
+    {
+      "requested_freq_mhz": 1320,
+      "avg_measured_freq_mhz": 1320,
+      "avg_power_w": 121.89,
+      "avg_execution_ms": 31.2517,
+      "repeats": 100,
+      "monitor_samples": 73
+    },
+    {
+      "requested_freq_mhz": 1305,
+      "avg_measured_freq_mhz": 1305,
+      "avg_power_w": 121.113,
+      "avg_execution_ms": 31.6008,
+      "repeats": 100,
+      "monitor_samples": 71
+    },
+    {
+      "requested_freq_mhz": 1290,
+      "avg_measured_freq_mhz": 1290,
+      "avg_power_w": 120.781,
+      "avg_execution_ms": 31.9572,
+      "repeats": 100,
+      "monitor_samples": 73
+    },
+    {
+      "requested_freq_mhz": 1275,
+      "avg_measured_freq_mhz": 1275,
+      "avg_power_w": 120.605,
+      "avg_execution_ms": 32.3226,
+      "repeats": 100,
+      "monitor_samples": 76
+    },
+    {
+      "requested_freq_mhz": 1260,
+      "avg_measured_freq_mhz": 1260,
+      "avg_power_w": 119.987,
+      "avg_execution_ms": 32.6958,
+      "repeats": 100,
+      "monitor_samples": 76
+    },
+    {
+      "requested_freq_mhz": 1245,
+      "avg_measured_freq_mhz": 1245,
+      "avg_power_w": 119.773,
+      "avg_execution_ms": 33.0788,
+      "repeats": 100,
+      "monitor_samples": 75
+    },
+    {
+      "requested_freq_mhz": 1230,
+      "avg_measured_freq_mhz": 1230,
+      "avg_power_w": 119.403,
+      "avg_execution_ms": 33.4711,
+      "repeats": 100,
+      "monitor_samples": 77
+    },
+    {
+      "requested_freq_mhz": 1215,
+      "avg_measured_freq_mhz": 1215,
+      "avg_power_w": 119.107,
+      "avg_execution_ms": 33.8752,
+      "repeats": 100,
+      "monitor_samples": 75
+    },
+    {
+      "requested_freq_mhz": 1200,
+      "avg_measured_freq_mhz": 1200,
+      "avg_power_w": 118.213,
+      "avg_execution_ms": 34.2878,
+      "repeats": 100,
+      "monitor_samples": 75
+    },
+    {
+      "requested_freq_mhz": 1185,
+      "avg_measured_freq_mhz": 1185,
+      "avg_power_w": 118.156,
+      "avg_execution_ms": 34.7119,
+      "repeats": 100,
+      "monitor_samples": 77
+    },
+    {
+      "requested_freq_mhz": 1170,
+      "avg_measured_freq_mhz": 1170,
+      "avg_power_w": 118.138,
+      "avg_execution_ms": 35.1453,
+      "repeats": 100,
+      "monitor_samples": 80
+    },
+    {
+      "requested_freq_mhz": 1155,
+      "avg_measured_freq_mhz": 1155,
+      "avg_power_w": 117.4,
+      "avg_execution_ms": 35.5908,
+      "repeats": 100,
+      "monitor_samples": 80
+    },
+    {
+      "requested_freq_mhz": 1140,
+      "avg_measured_freq_mhz": 1140,
+      "avg_power_w": 117.395,
+      "avg_execution_ms": 36.0488,
+      "repeats": 100,
+      "monitor_samples": 81
+    },
+    {
+      "requested_freq_mhz": 1125,
+      "avg_measured_freq_mhz": 1125,
+      "avg_power_w": 117.305,
+      "avg_execution_ms": 36.519,
+      "repeats": 100,
+      "monitor_samples": 82
+    },
+    {
+      "requested_freq_mhz": 1110,
+      "avg_measured_freq_mhz": 1110,
+      "avg_power_w": 116.369,
+      "avg_execution_ms": 37.0029,
+      "repeats": 100,
+      "monitor_samples": 84
+    },
+    {
+      "requested_freq_mhz": 1095,
+      "avg_measured_freq_mhz": 1095,
+      "avg_power_w": 116.268,
+      "avg_execution_ms": 37.5,
+      "repeats": 100,
+      "monitor_samples": 82
+    },
+    {
+      "requested_freq_mhz": 1080,
+      "avg_measured_freq_mhz": 1080,
+      "avg_power_w": 115.894,
+      "avg_execution_ms": 38.0117,
+      "repeats": 100,
+      "monitor_samples": 85
+    },
+    {
+      "requested_freq_mhz": 1065,
+      "avg_measured_freq_mhz": 1065,
+      "avg_power_w": 115.427,
+      "avg_execution_ms": 38.5353,
+      "repeats": 100,
+      "monitor_samples": 89
+    },
+    {
+      "requested_freq_mhz": 1050,
+      "avg_measured_freq_mhz": 1050,
+      "avg_power_w": 115.352,
+      "avg_execution_ms": 39.0753,
+      "repeats": 100,
+      "monitor_samples": 88
+    },
+    {
+      "requested_freq_mhz": 1035,
+      "avg_measured_freq_mhz": 1035,
+      "avg_power_w": 114.899,
+      "avg_execution_ms": 39.6312,
+      "repeats": 100,
+      "monitor_samples": 89
+    },
+    {
+      "requested_freq_mhz": 1020,
+      "avg_measured_freq_mhz": 1020,
+      "avg_power_w": 114.505,
+      "avg_execution_ms": 40.203,
+      "repeats": 100,
+      "monitor_samples": 91
+    },
+    {
+      "requested_freq_mhz": 1005,
+      "avg_measured_freq_mhz": 1005,
+      "avg_power_w": 114.435,
+      "avg_execution_ms": 40.7916,
+      "repeats": 100,
+      "monitor_samples": 92
+    },
+    {
+      "requested_freq_mhz": 990,
+      "avg_measured_freq_mhz": 990,
+      "avg_power_w": 114.348,
+      "avg_execution_ms": 41.4012,
+      "repeats": 100,
+      "monitor_samples": 92
+    },
+    {
+      "requested_freq_mhz": 975,
+      "avg_measured_freq_mhz": 975,
+      "avg_power_w": 114.25,
+      "avg_execution_ms": 42.0243,
+      "repeats": 100,
+      "monitor_samples": 96
+    },
+    {
+      "requested_freq_mhz": 960,
+      "avg_measured_freq_mhz": 960,
+      "avg_power_w": 113.495,
+      "avg_execution_ms": 42.6697,
+      "repeats": 100,
+      "monitor_samples": 97
+    },
+    {
+      "requested_freq_mhz": 945,
+      "avg_measured_freq_mhz": 945,
+      "avg_power_w": 113.5,
+      "avg_execution_ms": 43.3348,
+      "repeats": 100,
+      "monitor_samples": 100
+    },
+    {
+      "requested_freq_mhz": 930,
+      "avg_measured_freq_mhz": 930,
+      "avg_power_w": 113.586,
+      "avg_execution_ms": 44.0238,
+      "repeats": 100,
+      "monitor_samples": 99
+    },
+    {
+      "requested_freq_mhz": 915,
+      "avg_measured_freq_mhz": 915,
+      "avg_power_w": 113.54,
+      "avg_execution_ms": 44.7317,
+      "repeats": 100,
+      "monitor_samples": 100
+    },
+    {
+      "requested_freq_mhz": 900,
+      "avg_measured_freq_mhz": 900,
+      "avg_power_w": 113.144,
+      "avg_execution_ms": 45.4647,
+      "repeats": 100,
+      "monitor_samples": 104
+    },
+    {
+      "requested_freq_mhz": 885,
+      "avg_measured_freq_mhz": 885,
+      "avg_power_w": 112.67,
+      "avg_execution_ms": 46.2239,
+      "repeats": 100,
+      "monitor_samples": 103
+    },
+    {
+      "requested_freq_mhz": 870,
+      "avg_measured_freq_mhz": 870,
+      "avg_power_w": 112.629,
+      "avg_execution_ms": 47.0058,
+      "repeats": 100,
+      "monitor_samples": 105
+    },
+    {
+      "requested_freq_mhz": 855,
+      "avg_measured_freq_mhz": 855,
+      "avg_power_w": 112.626,
+      "avg_execution_ms": 47.8199,
+      "repeats": 100,
+      "monitor_samples": 107
+    },
+    {
+      "requested_freq_mhz": 840,
+      "avg_measured_freq_mhz": 840,
+      "avg_power_w": 112.541,
+      "avg_execution_ms": 48.6587,
+      "repeats": 100,
+      "monitor_samples": 109
+    },
+    {
+      "requested_freq_mhz": 825,
+      "avg_measured_freq_mhz": 825,
+      "avg_power_w": 112.054,
+      "avg_execution_ms": 49.5302,
+      "repeats": 100,
+      "monitor_samples": 111
+    },
+    {
+      "requested_freq_mhz": 810,
+      "avg_measured_freq_mhz": 810,
+      "avg_power_w": 111.664,
+      "avg_execution_ms": 50.4365,
+      "repeats": 100,
+      "monitor_samples": 113
+    },
+    {
+      "requested_freq_mhz": 795,
+      "avg_measured_freq_mhz": 795,
+      "avg_power_w": 111.718,
+      "avg_execution_ms": 51.3738,
+      "repeats": 100,
+      "monitor_samples": 117
+    },
+    {
+      "requested_freq_mhz": 780,
+      "avg_measured_freq_mhz": 780,
+      "avg_power_w": 111.656,
+      "avg_execution_ms": 52.3505,
+      "repeats": 100,
+      "monitor_samples": 122
+    },
+    {
+      "requested_freq_mhz": 765,
+      "avg_measured_freq_mhz": 765,
+      "avg_power_w": 111.656,
+      "avg_execution_ms": 53.3628,
+      "repeats": 100,
+      "monitor_samples": 125
+    },
+    {
+      "requested_freq_mhz": 750,
+      "avg_measured_freq_mhz": 750,
+      "avg_power_w": 111.21,
+      "avg_execution_ms": 54.4177,
+      "repeats": 100,
+      "monitor_samples": 124
+    },
+    {
+      "requested_freq_mhz": 735,
+      "avg_measured_freq_mhz": 735,
+      "avg_power_w": 110.709,
+      "avg_execution_ms": 55.517,
+      "repeats": 100,
+      "monitor_samples": 127
+    },
+    {
+      "requested_freq_mhz": 720,
+      "avg_measured_freq_mhz": 720,
+      "avg_power_w": 110.752,
+      "avg_execution_ms": 56.6587,
+      "repeats": 100,
+      "monitor_samples": 129
+    },
+    {
+      "requested_freq_mhz": 705,
+      "avg_measured_freq_mhz": 705,
+      "avg_power_w": 110.266,
+      "avg_execution_ms": 57.8524,
+      "repeats": 100,
+      "monitor_samples": 128
+    },
+    {
+      "requested_freq_mhz": 690,
+      "avg_measured_freq_mhz": 690,
+      "avg_power_w": 109.942,
+      "avg_execution_ms": 59.0963,
+      "repeats": 100,
+      "monitor_samples": 139
+    },
+    {
+      "requested_freq_mhz": 675,
+      "avg_measured_freq_mhz": 675,
+      "avg_power_w": 109.77,
+      "avg_execution_ms": 60.3942,
+      "repeats": 100,
+      "monitor_samples": 139
+    },
+    {
+      "requested_freq_mhz": 660,
+      "avg_measured_freq_mhz": 660,
+      "avg_power_w": 109.783,
+      "avg_execution_ms": 61.7535,
+      "repeats": 100,
+      "monitor_samples": 143
+    },
+    {
+      "requested_freq_mhz": 645,
+      "avg_measured_freq_mhz": 645,
+      "avg_power_w": 109.764,
+      "avg_execution_ms": 63.1775,
+      "repeats": 100,
+      "monitor_samples": 144
+    },
+    {
+      "requested_freq_mhz": 630,
+      "avg_measured_freq_mhz": 630,
+      "avg_power_w": 109.184,
+      "avg_execution_ms": 64.6655,
+      "repeats": 100,
+      "monitor_samples": 147
+    },
+    {
+      "requested_freq_mhz": 615,
+      "avg_measured_freq_mhz": 615,
+      "avg_power_w": 108.901,
+      "avg_execution_ms": 66.2271,
+      "repeats": 100,
+      "monitor_samples": 152
+    },
+    {
+      "requested_freq_mhz": 600,
+      "avg_measured_freq_mhz": 600,
+      "avg_power_w": 108.808,
+      "avg_execution_ms": 67.8652,
+      "repeats": 100,
+      "monitor_samples": 156
+    },
+    {
+      "requested_freq_mhz": 585,
+      "avg_measured_freq_mhz": 585,
+      "avg_power_w": 108.805,
+      "avg_execution_ms": 69.5889,
+      "repeats": 100,
+      "monitor_samples": 159
+    },
+    {
+      "requested_freq_mhz": 570,
+      "avg_measured_freq_mhz": 570,
+      "avg_power_w": 108.691,
+      "avg_execution_ms": 71.4037,
+      "repeats": 100,
+      "monitor_samples": 165
+    },
+    {
+      "requested_freq_mhz": 555,
+      "avg_measured_freq_mhz": 555,
+      "avg_power_w": 107.935,
+      "avg_execution_ms": 73.3148,
+      "repeats": 100,
+      "monitor_samples": 169
+    },
+    {
+      "requested_freq_mhz": 540,
+      "avg_measured_freq_mhz": 540,
+      "avg_power_w": 107.886,
+      "avg_execution_ms": 75.2951,
+      "repeats": 100,
+      "monitor_samples": 175
+    },
+    {
+      "requested_freq_mhz": 525,
+      "avg_measured_freq_mhz": 525,
+      "avg_power_w": 107.785,
+      "avg_execution_ms": 77.4302,
+      "repeats": 100,
+      "monitor_samples": 177
+    },
+    {
+      "requested_freq_mhz": 510,
+      "avg_measured_freq_mhz": 510,
+      "avg_power_w": 107.172,
+      "avg_execution_ms": 79.6783,
+      "repeats": 100,
+      "monitor_samples": 180
+    },
+    {
+      "requested_freq_mhz": 495,
+      "avg_measured_freq_mhz": 495,
+      "avg_power_w": 106.952,
+      "avg_execution_ms": 82.0495,
+      "repeats": 100,
+      "monitor_samples": 186
+    },
+    {
+      "requested_freq_mhz": 480,
+      "avg_measured_freq_mhz": 480,
+      "avg_power_w": 106.898,
+      "avg_execution_ms": 84.6123,
+      "repeats": 100,
+      "monitor_samples": 197
+    },
+    {
+      "requested_freq_mhz": 465,
+      "avg_measured_freq_mhz": 465,
+      "avg_power_w": 106.901,
+      "avg_execution_ms": 87.384,
+      "repeats": 100,
+      "monitor_samples": 202
+    },
+    {
+      "requested_freq_mhz": 450,
+      "avg_measured_freq_mhz": 450,
+      "avg_power_w": 106.698,
+      "avg_execution_ms": 90.0767,
+      "repeats": 100,
+      "monitor_samples": 205
+    },
+    {
+      "requested_freq_mhz": 435,
+      "avg_measured_freq_mhz": 435,
+      "avg_power_w": 106.315,
+      "avg_execution_ms": 93.1477,
+      "repeats": 100,
+      "monitor_samples": 216
+    },
+    {
+      "requested_freq_mhz": 420,
+      "avg_measured_freq_mhz": 420,
+      "avg_power_w": 106.087,
+      "avg_execution_ms": 96.411,
+      "repeats": 100,
+      "monitor_samples": 218
+    },
+    {
+      "requested_freq_mhz": 405,
+      "avg_measured_freq_mhz": 405,
+      "avg_power_w": 106,
+      "avg_execution_ms": 99.8732,
+      "repeats": 100,
+      "monitor_samples": 227
+    },
+    {
+      "requested_freq_mhz": 390,
+      "avg_measured_freq_mhz": 390,
+      "avg_power_w": 105.962,
+      "avg_execution_ms": 103.67,
+      "repeats": 100,
+      "monitor_samples": 239
+    },
+    {
+      "requested_freq_mhz": 375,
+      "avg_measured_freq_mhz": 375,
+      "avg_power_w": 105.94,
+      "avg_execution_ms": 107.814,
+      "repeats": 100,
+      "monitor_samples": 250
+    },
+    {
+      "requested_freq_mhz": 360,
+      "avg_measured_freq_mhz": 360,
+      "avg_power_w": 105.922,
+      "avg_execution_ms": 112.336,
+      "repeats": 100,
+      "monitor_samples": 257
+    },
+    {
+      "requested_freq_mhz": 345,
+      "avg_measured_freq_mhz": 345,
+      "avg_power_w": 105.799,
+      "avg_execution_ms": 117.183,
+      "repeats": 100,
+      "monitor_samples": 269
+    },
+    {
+      "requested_freq_mhz": 330,
+      "avg_measured_freq_mhz": 330,
+      "avg_power_w": 104.976,
+      "avg_execution_ms": 122.476,
+      "repeats": 100,
+      "monitor_samples": 288
+    },
+    {
+      "requested_freq_mhz": 315,
+      "avg_measured_freq_mhz": 315,
+      "avg_power_w": 104.967,
+      "avg_execution_ms": 128.257,
+      "repeats": 100,
+      "monitor_samples": 301
+    },
+    {
+      "requested_freq_mhz": 300,
+      "avg_measured_freq_mhz": 300,
+      "avg_power_w": 104.88,
+      "avg_execution_ms": 134.714,
+      "repeats": 100,
+      "monitor_samples": 309
+    },
+    {
+      "requested_freq_mhz": 285,
+      "avg_measured_freq_mhz": 285,
+      "avg_power_w": 104.616,
+      "avg_execution_ms": 141.85,
+      "repeats": 100,
+      "monitor_samples": 320
+    },
+    {
+      "requested_freq_mhz": 270,
+      "avg_measured_freq_mhz": 270,
+      "avg_power_w": 104.7,
+      "avg_execution_ms": 149.624,
+      "repeats": 100,
+      "monitor_samples": 347
+    },
+    {
+      "requested_freq_mhz": 255,
+      "avg_measured_freq_mhz": 255,
+      "avg_power_w": 103.972,
+      "avg_execution_ms": 158.425,
+      "repeats": 100,
+      "monitor_samples": 362
+    },
+    {
+      "requested_freq_mhz": 240,
+      "avg_measured_freq_mhz": 240,
+      "avg_power_w": 103.976,
+      "avg_execution_ms": 168.381,
+      "repeats": 100,
+      "monitor_samples": 381
+    },
+    {
+      "requested_freq_mhz": 225,
+      "avg_measured_freq_mhz": 225,
+      "avg_power_w": 103.962,
+      "avg_execution_ms": 178.886,
+      "repeats": 100,
+      "monitor_samples": 418
+    },
+    {
+      "requested_freq_mhz": 210,
+      "avg_measured_freq_mhz": 210,
+      "avg_power_w": 103.971,
+      "avg_execution_ms": 179.702,
+      "repeats": 100,
+      "monitor_samples": 413
+    }
+  ]
+}
