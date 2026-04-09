@@ -1,0 +1,19 @@
+{
+  "platform": "jetson",
+  "workload": "bfs_releaseguard",
+  "num_nodes": 2000000,
+  "edges_per_node": 8,
+  "period_s": 0.7,
+  "duration_s": 60,
+  "jobs": 1,
+  "power_sample_period_ms": 100,
+  "avg_response_ms": 42.6301,
+  "avg_ke_ms": 42.5336,
+  "avg_memory_ms": 3.41999,
+  "avg_h2d_ms": 3.41999,
+  "avg_d2h_ms": 0,
+  "avg_measured_freq_mhz": 918,
+  "avg_power_w": 5.48399,
+  "monitor_samples": 475,
+  "num_released_jobs": 86
+}

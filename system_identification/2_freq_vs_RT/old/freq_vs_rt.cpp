@@ -63,12 +63,12 @@ static const std::vector<long long> kFreqsHz = {
 static const std::vector<TaskConfig> kTasks = {
     // Replace problem_size and log_path with your real values/paths.
     //Usage: ../tasks/bfs <num_nodes> <period_s> <duration_s> [jobs] [out_json] 
-    {"mm",       "../tasks/mm",       "512", "logs/mm_t1.log"},
-    {"stereo",   "../tasks/stereo",   "1024", "logs/stereo_t1.log"},
-    {"quasi",    "../tasks/quasi",    "1024", "logs/quasi_t1.log"},
-    {"hist",     "../tasks/hist",     "1024", "logs/hist_t1.log"},
-    {"particle", "../tasks/particle", "1920 1080", "logs/particle_t1.log"},
-    {"bfs",      "../tasks/bfs",      "1024", "logs/bfs_t1.log"}
+    {"mm",       "../tasks/mm",       "1333", "logs/mm_t1.log"},
+    {"stereo",   "../tasks/stereo",   "2304 1728", "logs/stereo_t1.log"},
+    {"quasi",    "../tasks/quasi",    "16777216", "logs/quasi_t1.log"},
+    {"hist",     "../tasks/hist",     "65536000", "logs/hist_t1.log"},
+    {"particle", "../tasks/particle", "21948", "logs/particle_t1.log"},
+    {"bfs",      "../tasks/bfs",      "2000000", "logs/bfs_t1.log"}
 };
 // ---------------------------
 
