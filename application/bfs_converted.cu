@@ -32,7 +32,8 @@
 bool keepRunning = true;
 volatile sig_atomic_t gotSIGHUP = 0;
 
-const int no_of_nodes = 1 << 24;
+const int no_of_nodes = 2000000;
+//const int no_of_nodes = 1 << 24;
 const int edges_per_node = 8;
 const int no_of_edges = no_of_nodes * edges_per_node;
 const int iterations = 30;
@@ -217,6 +218,7 @@ class service {
 
 float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
     float sum_kernel_ms = 0.0f;
+    GpuLockGuard lock(gpu_sem); 
 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startEv, stream));
@@ -234,7 +236,11 @@ float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
 
         CUDA_CHECK(cudaEventRecord(stopEv, stream));
         while (cudaEventQuery(stopEv) == cudaErrorNotReady) {
-            asm volatile("pause" ::: "memory");
+                #ifdef Jetson 
+                    asm volatile("yield" ::: "memory");
+                #else 
+                    asm volatile("pause" ::: "memory");
+                #endif
         }
 
         float kernel_ms = 0.0f;

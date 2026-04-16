@@ -34,7 +34,8 @@
 bool keepRunning = true;
 volatile sig_atomic_t gotSIGHUP = 0;
 
-const int Nparticles = 1 << 16;
+const int Nparticles = 21948;
+//const int Nparticles = 1 << 16;
 
 static void handleSIGHUP(int sig) {
     if (sig == SIGHUP) gotSIGHUP = 1;
@@ -226,7 +227,7 @@ class service {
 
 float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
     float sum_kernel_ms = 0.0f;
-
+    GpuLockGuard lock(gpu_sem);
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startEv, stream));
 
@@ -237,7 +238,11 @@ float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
 
         CUDA_CHECK(cudaEventRecord(stopEv, stream));
         while (cudaEventQuery(stopEv) == cudaErrorNotReady) {
-            asm volatile("pause" ::: "memory");
+            #ifdef Jetson 
+                asm volatile("yield" ::: "memory");
+            #else
+                asm volatile("pause" ::: "memory");
+            #endif 
         }
 
         float kernel_ms = 0.0f;

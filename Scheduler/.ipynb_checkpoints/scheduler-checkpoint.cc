@@ -121,7 +121,7 @@ int main(int argc, char*argv[]){
     string path =argv[2];
     int solution = atoi(argv[3]);
     int duration = atoi(argv[4]);
-    float powersetpoint = atoi(argv[5]);
+    float powersetpoint = atof(argv[5]);
     int expected_len = 6 + 3 * num_tasks;
     unordered_map<int,Task>taskset;
     filedelete();
@@ -144,6 +144,7 @@ int main(int argc, char*argv[]){
             base += 3;
         }
     }
+    cout<<"Power Set point = "<<powersetpoint<<endl;
     cout << "Tasks loaded:" << endl;
     for (auto const& [id, task] : taskset) {
         cout << "ID: " << id << " | Name: " << task.name 

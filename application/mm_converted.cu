@@ -24,7 +24,8 @@
 
 #include "../Scheduler/shared_header.hpp"
 
-static int N = 1800;
+static int N = 1333;
+//static int N = 1800;
 static bool keepRunning = true;
 static volatile sig_atomic_t gotSIGHUP = 0;
 #define SIGNAL_TYPE SIGHUP
@@ -75,31 +76,36 @@ static void pin_this_thread(int task_id, int base_core = 1)
 
     errno = 0;
     (void)setpriority(PRIO_PROCESS, 0, -5);
-
+#ifdef DEBUG
     std::cout << "[task " << task_id << "] pinned core=" << core << "\n";
+#endif
 }
 
-static void try_mlockall()
-{
-    if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0) {
-        std::cerr << "mlockall failed: " << strerror(errno)
-                  << " (may need higher memlock ulimit). Continuing without mlockall.\n";
-    } else {
-        std::cout << "mlockall enabled\n";
-    }
-}
+//static void try_mlockall()
+//{
+//    if (mlockall(MCL_CURRENT | MCL_FUTURE) != 0) {
+//        std::cerr << "mlockall failed: " << strerror(errno)
+//                  << " (may need higher memlock ulimit). Continuing without mlockall.\n";
+//    } else {
+//#ifdef DEBUG
+//        std::cout << "mlockall enabled\n";
+//#endif
+//    }
+//}
 
 static void try_enable_realtime_fifo(int prio)
 {
-    sched_param sp{};
-    sp.sched_priority = prio;
-
-    if (sched_setscheduler(0, SCHED_FIFO, &sp) == -1) {
-        std::cerr << "sched_setscheduler(SCHED_FIFO) failed: " << strerror(errno)
-                  << " (need CAP_SYS_NICE or root). Continuing with normal scheduling.\n";
-    } else {
-        std::cout << "SCHED_FIFO enabled, priority=" << prio << "\n";
-    }
+//    sched_param sp{};
+//    sp.sched_priority = prio;
+//
+//    if (sched_setscheduler(0, SCHED_FIFO, &sp) == -1) {
+//        std::cerr << "sched_setscheduler(SCHED_FIFO) failed: " << strerror(errno)
+//                  << " (need CAP_SYS_NICE or root). Continuing with normal scheduling.\n";
+//    } else {
+//#ifdef DEBUG
+//        std::cout << "SCHED_FIFO enabled, priority=" << prio << "\n";
+//#endif
+//    }
 }
 
 static void append_locked(const std::string& path, const std::string& line)
@@ -128,17 +134,19 @@ static void print_cuda_versions_or_exit()
         std::exit(1);
     }
 
-    auto fmt = [](int v) {
-        int major = v / 1000;
-        int minor = (v % 1000) / 10;
-        int patch = v % 10;
-        std::string s = std::to_string(major) + "." + std::to_string(minor);
-        if (patch != 0) s += "." + std::to_string(patch);
-        return s;
-    };
+    //auto fmt = [](int v) {
+    //    int major = v / 1000;
+    //    int minor = (v % 1000) / 10;
+    //    int patch = v % 10;
+    //    std::string s = std::to_string(major) + "." + std::to_string(minor);
+    //    if (patch != 0) s += "." + std::to_string(patch);
+    //    return s;
+    //};
 
+#ifdef DEBUG
     std::cout << "CUDA driver API version: " << drv << " (" << fmt(drv) << ")\n";
     std::cout << "CUDA runtime version   : " << rt  << " (" << fmt(rt)  << ")\n";
+#endif
 
     if (drv < rt) {
         std::cerr << "ERROR: NVIDIA driver is older than CUDA runtime.\n";
@@ -183,13 +191,18 @@ private:
 float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms)
 {
     float sum_kernel_ms = 0.0f;
+    GpuLockGuard lock(gpu_sem); 
 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startEv, stream));
         matMulKernel<<<gridDim, blockDim, 0, stream>>>(d_A, d_B, d_C, N);
         CUDA_CHECK(cudaEventRecord(stopEv, stream));
         while (cudaEventQuery(stopEv) == cudaErrorNotReady) {
-            asm volatile("pause" ::: "memory");
+            #ifdef Jetson 
+                asm volatile("yield" ::: "memory");
+            #else
+                asm volatile("pause" ::: "memory");
+            #endif
         }
 
         float kernel_ms = 0.0f;
@@ -218,11 +231,13 @@ float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms)
 
 void service::runService()
 {
+#ifdef DEBUG
     std::cout << "In service loop\n";
+#endif
     print_cuda_versions_or_exit();
 
     pin_this_thread(task, 1);
-    try_mlockall();
+    //try_mlockall();
     try_enable_realtime_fifo(80);
 
     CUDA_CHECK(cudaStreamCreateWithFlags(&stream, cudaStreamNonBlocking));
@@ -262,7 +277,9 @@ void service::runService()
         kill(pids, SIGNAL_TYPE);
         while (!gotSIGHUP) pause();
     }
+#ifdef DEBUG
     std::cout << "Received Handshake\n";
+#endif
 
     if (sharedData) sharedData->newperiods[task] = period;
     std::filesystem::create_directories(std::filesystem::path(path));
@@ -360,7 +377,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+#ifdef DEBUG
     std::cout << "Successfully attached to existing shared memory.\n";
+#endif
     service svc(task, setpoint, period, termination, path, pid);
     svc.runService();
     return 0;

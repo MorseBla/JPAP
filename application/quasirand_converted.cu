@@ -28,13 +28,14 @@
 #include "../Scheduler/shared_header.hpp"
 
 #define SIGNAL_TYPE SIGHUP
-
+//e
 bool keepRunning = true;
 volatile sig_atomic_t gotSIGHUP = 0;
 
 // --- Quasirand Variables ---
 #define BLOCK_SIZE 256
-const unsigned int numSims = 1 << 28;
+const unsigned int numSims = 16777216; 
+//const unsigned int numSims = 1 << 28;
 const unsigned int threadsPerBlock = BLOCK_SIZE;
 const unsigned int blocksPerGrid = 256;
 
@@ -267,7 +268,7 @@ class service {
 
 float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
     float sum_kernel_ms = 0.0f;
-
+    GpuLockGuard lock(gpu_sem); 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaMemsetAsync(d_results, 0, blocksPerGrid * sizeof(unsigned int), stream));
 
@@ -278,7 +279,11 @@ float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms) {
 
         CUDA_CHECK(cudaEventRecord(stopEv, stream));
         while (cudaEventQuery(stopEv) == cudaErrorNotReady) {
-            asm volatile("pause" ::: "memory");
+            #ifdef Jetson 
+                asm volatile("yield" ::: "memory");
+            #else
+                asm volatile("pause" ::: "memory");
+            #endif 
         }
 
         float kernel_ms = 0.0f;

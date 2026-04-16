@@ -3,7 +3,7 @@ set -euo pipefail
 
 APP_DIR="../application"     
 SCHED_DIR="../Scheduler"     
-LOG_ROOT="./FC-GPU_bounds/"        
+LOG_ROOT="./FC-GPU_bounds"        
 
 # Available workloads
 workloads=(
@@ -32,6 +32,7 @@ solution=1
 setpoint_combos=(
   "0.80 0.80 0.80"
 )
+ps_set=5000
 
 # -----------------------------
 # Helpers
@@ -86,10 +87,10 @@ compile_tasks() {
     if [[ "$task_name" == "dxtc" ]]; then
       nvcc -o "t$index" "$src" \
         -I ../Common/ -I ../Samples/5_Domain_Specific/dxtc/ \
-        -L ../Common/ -lcudart -DT$index -std=c++17
+        -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
     else
       nvcc -o "t$index" "$src" \
-        -I ../Common/ -L ../Common/ -lcudart -DT$index -std=c++17
+        -I ../Common/ -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
     fi
     ((index++))
   done
@@ -101,7 +102,7 @@ compile_server() {
   local src2="${SCHED_DIR}/scheduler.cc"
   [[ -f "$src" ]] || { echo "ERROR: missing controller: $src" >&2; exit 1; }
   [[ -f "$src2" ]] || { echo "ERROR: missing scheduler: $src2" >&2; exit 1; }
-  g++ "$src" -o server -std=c++17 -lrt -pthread -DCLAMP_PERIODS -DBOUND=50
+  g++ "$src" -o server -std=c++17 -lrt -pthread  -DJetson #-DCLAMP_PERIODS -DBOUND=50
   g++ "$src2" -o scheduler -std=c++17 -lrt -pthread 
 }
 
@@ -140,9 +141,10 @@ run_combination() {
     local sp_dir="${comb_log_dir}/setpoint_$(echo "$sp_line" | tr ' ' '_')"
     mkdir -p "$sp_dir"
 
-    local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration")
+    local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$ps_set")
+    echo $args
     for ((i=0; i<num_tasks; i++)); do
-      taskname="t$((i+1))"     # creates t1, t2, t3...
+      taskname="t$((i+1))" 
       args+=("$taskname" "${rates[i]}" "${setpoints[i]}")
     done
 

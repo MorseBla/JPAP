@@ -14,7 +14,6 @@ using namespace std;
 #include <chrono>
 #include <algorithm>   
 #include <cmath>       
-#include <iostream>
 #include<vector>
 #include <csignal>
 #include <fcntl.h>
@@ -38,12 +37,18 @@ using namespace std;
 #include <queue>
 #include <unordered_map>
 #include <iomanip>
-#include <iostream>
 #include <vector>
 #include <deque>
+
+#include <errno.h>
+#include <cstring>
+#include <string>
+#include <stdexcept>
+
+
 #define SIGUSR3 30
 #define SIGUSR4 31
-#define range 5
+#define old_range 5
 extern std::atomic<float> current_freq;
 extern float innerloopduration;
 extern float outerloopduration;
@@ -57,6 +62,7 @@ std::vector<float>interfreqvalues;
 std::vector<float>finalpowervalues;
 std::vector<float>finalfrequencyvalues;
 std::vector<float>averagertrr;
+inline std::mutex mtx_task;
 
 float**gain;
 struct logtasks {
@@ -79,7 +85,7 @@ struct logtasks {
     std::vector<float> filewritelowperiodbound;
     std::vector<float> filewritertr;
     std::vector<float> filewritedeadlinemiss;
-
+    std::vector<float> tasksetpoint;
     void add_exec(float v) { std::lock_guard<std::mutex> lk(mtx); exec.push_back(v); }
     void add_rt(float v) { std::lock_guard<std::mutex> lk(mtx); response.push_back(v); }
     void add_period(float v) { std::lock_guard<std::mutex> lk(mtx); period.push_back(v); }
@@ -87,13 +93,59 @@ struct logtasks {
     void add_deadline(float v) { std::lock_guard<std::mutex> lk(mtx); deadlinemiss.push_back(v); }
     void add_higherperiodbound(float v) { std::lock_guard<std::mutex> lk(mtx);higherperiodbound.push_back(v); }
     void add_lowerperiodbound(float v) { std::lock_guard<std::mutex> lk(mtx);lowerperiodbound.push_back(v); }
-
     void outeradd_exec(float v) { std::lock_guard<std::mutex> lk(mtx); outerexec.push_back(v); }
     void outeradd_rt(float v) { std::lock_guard<std::mutex> lk(mtx); outerresponse.push_back(v); }
     void outeradd_period(float v) { std::lock_guard<std::mutex> lk(mtx); outerperiod.push_back(v); }
     void outeradd_rtr(float v) { std::lock_guard<std::mutex> lk(mtx); outerrtr.push_back(v); }
-    
+    void add_tasksetpoint(float v) { std::lock_guard<std::mutex> lk(mtx); tasksetpoint.push_back(v); }    
 };
+
+struct logpower{
+    std::mutex mtx;
+    std::vector<float>powersetpoints;
+    std::vector<float>powercontrolperiod;
+    std::vector<float>powerseterror;
+    std::vector<float>measuredpower;
+    void add_measuredpower(float v) { std::lock_guard<std::mutex> lk(mtx); measuredpower.push_back(v); }
+    void add_powersetpoint(float v) { std::lock_guard<std::mutex> lk(mtx); powersetpoints.push_back(v); }
+    void add_powercontrolperiod(float v) { std::lock_guard<std::mutex> lk(mtx); powercontrolperiod.push_back(v); }
+    void add_powerseterror(float v) { std::lock_guard<std::mutex> lk(mtx); powerseterror.push_back(v); }
+};
+struct logging_sys{
+    logpower power;
+    explicit logging_sys(int solution) : solution_id(solution) {};
+    std::unordered_map<int, std::string> solution = {
+            {1, "FC_GPU"},
+            {2, "DFS"},
+            {3, "Proposed"},
+            {4, "OpenLoop"},
+            {5, "Adhoc"},
+            {6, "SISO"},
+        };
+    int solution_id;
+    std::string solution_name() const
+    {
+        auto it = solution.find(solution_id);
+        if (it != solution.end()) return it->second;
+        return "UNKNOWN";
+    }
+ 
+    void dump_files(const std::string& path)
+    {
+        std::string sol = solution_name();
+        std::filesystem::create_directories(path);
+        std::ofstream fpowersetpoint(path + "/" + sol + "_" +"_powersetpoint.txt", std::ios::app);
+        std::ofstream fpowercontrolperiod(path + "/" + sol +"_" + "_powercontrolperiod.txt", std::ios::app);
+        std::ofstream fpowerseterror(path + "/" + sol + "_" + "_powerseterror.txt", std::ios::app);
+
+        for (float v : power.powersetpoints) fpowersetpoint << v << "\n";
+        for (float v : power.powercontrolperiod) fpowercontrolperiod << v << "\n";
+        for (float v : power.powerseterror) fpowerseterror << v << "\n";
+
+        }
+};
+
+
 
 struct logging {
     std::vector<logtasks> tasks;
@@ -148,7 +200,20 @@ struct logging {
         std::filesystem::create_directories(path);
         std::ofstream fp(path + "/" + sol + "_finalpowervalues.txt", std::ios::app);
         for (float p : powervals) fp << p << "\n";
+    
+    
+    
+    
+    
     }
+     void dump_power_setpoint(const std::string& path, const std::vector<float>& powervals)
+    {
+        std::string sol = solution_name();
+        std::filesystem::create_directories(path);
+        std::ofstream fp(path + "/" + sol + "_finalpower_setpoint.txt", std::ios::app);
+        for (float p : powervals) fp << p << "\n";
+    }
+    
     void dump_freq(const std::string& path, const std::vector<float>& freqvals)
     {
         std::string sol = solution_name();
@@ -232,3 +297,69 @@ struct SharedData {
     float executiontime[4]; 
 };
 SharedData* sharedData;
+
+
+
+
+
+
+
+
+
+
+
+
+#pragma once
+
+#include <fcntl.h>
+#include <semaphore.h>
+#include <errno.h>
+#include <cstring>
+#include <string>
+
+class GpuSemaphore {
+public:
+    GpuSemaphore() {
+        sem_ = sem_open("/gpu_global_lock", O_CREAT, 0666, 1);
+        if (sem_ == SEM_FAILED) {
+            throw std::runtime_error(
+                std::string("sem_open failed: ") + std::strerror(errno));
+        }
+    }
+
+    void lock() {
+        while (sem_wait(sem_) == -1) {
+            if (errno != EINTR) {
+                throw std::runtime_error(
+                    std::string("sem_wait failed: ") + std::strerror(errno));
+            }
+        }
+    }
+
+    void unlock() {
+        if (sem_post(sem_) == -1) {
+            throw std::runtime_error(
+                std::string("sem_post failed: ") + std::strerror(errno));
+        }
+    }
+
+    ~GpuSemaphore() {
+        if (sem_ != SEM_FAILED) {
+            sem_close(sem_);
+        }
+    }
+
+private:
+    sem_t* sem_;
+};
+
+class GpuLockGuard {
+public:
+    explicit GpuLockGuard(GpuSemaphore& s) : sem_(s) { sem_.lock(); }
+    ~GpuLockGuard() { sem_.unlock(); }
+
+private:
+    GpuSemaphore& sem_;
+};
+
+inline GpuSemaphore gpu_sem;

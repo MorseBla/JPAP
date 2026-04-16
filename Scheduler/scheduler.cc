@@ -33,9 +33,13 @@ void filedelete() {
     std::string path = "pid.txt";
     try {
         if (std::filesystem::remove(path)) {
-            std::cout << "File " << path << " deleted successfully.\n";
+            #ifdef DEBUG 
+                std::cout << "File " << path << " deleted successfully.\n";
+            #endif
         } else {
-            std::cout << "File " << path << " not found (nothing to delete).\n";
+            #ifdef DEBUG 
+                std::cout << "File " << path << " not found (nothing to delete).\n";
+            #endif
         }
     } 
     catch (const std::filesystem::filesystem_error& e) {
@@ -55,7 +59,8 @@ void launch_tasks(int num_tasks, unordered_map<int, Task>& taskset, float durati
 
         if (pid == 0) {
             // --- CHILD PROCESS ---
-            string exec_path = "./" + taskset[i].name;
+            string exec_path = taskset[i].name;
+            //string exec_path = "../application/bin" + taskset[i].name;
 
             vector<string> arg_strings;
             arg_strings.push_back(exec_path);            // argv[0] is the program name
@@ -71,6 +76,7 @@ void launch_tasks(int num_tasks, unordered_map<int, Task>& taskset, float durati
             }
             args.push_back(nullptr);
             execvp(args[0], args.data());
+            cout << exec_path << " AAAAAAAAAAAAAA\n";
             perror("execvp failed");
             exit(1); 
         } else {
@@ -92,7 +98,8 @@ void launch_server(int num_tasks, int solution, float duration,string path,float
     task_pids.push_back(pid);
     if (pid == 0) {
         vector<string> arg_strings;
-        arg_strings.push_back("./server");
+        arg_strings.push_back("../Scheduler/bin/server"); 
+        //arg_strings.push_back("./server");
         arg_strings.push_back(to_string(num_tasks));
         arg_strings.push_back(to_string(solution));
         arg_strings.push_back(to_string((int)duration));
@@ -121,7 +128,7 @@ int main(int argc, char*argv[]){
     string path =argv[2];
     int solution = atoi(argv[3]);
     int duration = atoi(argv[4]);
-    float powersetpoint = atoi(argv[5]);
+    float powersetpoint = atof(argv[5]);
     int expected_len = 6 + 3 * num_tasks;
     unordered_map<int,Task>taskset;
     filedelete();
@@ -144,11 +151,14 @@ int main(int argc, char*argv[]){
             base += 3;
         }
     }
+#ifdef DEBUG 
+    cout<<"Power Set point = "<<powersetpoint<<endl;
     cout << "Tasks loaded:" << endl;
     for (auto const& [id, task] : taskset) {
         cout << "ID: " << id << " | Name: " << task.name 
              << " | period: " << task.param1 << " | setpoint: " << task.param2 << endl;
     }
+#endif
 
     vector<int> task_pids;
     vector<int> procs;
@@ -163,6 +173,8 @@ int main(int argc, char*argv[]){
        waitpid(pid, &status, 0);
         
     }   
+#ifdef DEBUG 
     std::cout<<"Finished Scheduling \n";
+#endif
     return 0;
 }
