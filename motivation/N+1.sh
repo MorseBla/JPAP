@@ -85,32 +85,11 @@ compile_tasks() {
   local index=1
   echo "Compiling workloads from: $APP_DIR/"
   make -C $APP_DIR EXTRA_FLAGS="-DJetson"
-  #for task_name in "$@"; do
-  #  local src="${APP_DIR}/${task_name}.cu"
-  #  [[ -f "$src" ]] || { echo "ERROR: missing workload: $src" >&2; exit 1; }
-
-  #  echo "Compiling $task_name as t$index..."
-  #  if [[ "$task_name" == "dxtc" ]]; then
-  #    nvcc -o "t$index" "$src" \
-  #      -I ../Common/ -I ../Samples/5_Domain_Specific/dxtc/ \
-  #      -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
-  #  else
-  #    nvcc -o "t$index" "$src" \
-  #      -I ../Common/ -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
-  #  fi
-  #  ((index++))
-  #done
 }
 
 compile_server() {
   echo "Compiling controller from: $SCHED_DIR/"
   make -C $SCHED_DIR EXTRA_FLAGS="-DJetson" #-DCLAMP_PERIODS -DBOUND=50
-  #local src="${SCHED_DIR}/controller.cc"
-  #local src2="${SCHED_DIR}/scheduler.cc"
-  #[[ -f "$src" ]] || { echo "ERROR: missing controller: $src" >&2; exit 1; }
-  #[[ -f "$src2" ]] || { echo "ERROR: missing scheduler: $src2" >&2; exit 1; }
-  #g++ "$src" -o server -std=c++17 -lrt -pthread -I /usr/include/eigen3 -DJetson #-DCLAMP_PERIODS -DBOUND=50
-  #g++ "$src2" -o scheduler -std=c++17 -lrt -pthread 
 }
 
 run_combination() {

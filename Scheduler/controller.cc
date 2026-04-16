@@ -1319,15 +1319,15 @@ void compute_LQR_gain_2(float** gain, int numtasks) //this one works for less th
         0.02831200f,
         0.08079800f
     };
-
     const float base_last_row_full[6] = {
-        22.20753300f,
-        11.07223000f,
-        28.52230300f,
-        7.38135200f,
-        13.56965500f,
-        15.28722400f
+        0.02220753300f,
+        0.01107223000f,
+        0.02852230300f,
+        0.0738135200f,
+        0.01356965500f,
+        0.01528722400f
     };
+    
 
     const float base_bottom_right = 0.00116413f;
 
@@ -1368,17 +1368,20 @@ void compute_LQR_gain_2(float** gain, int numtasks) //this one works for less th
     // -------------------------------------------------------------------------
     // Q and R
     // -------------------------------------------------------------------------
+
+    const float q_scale = 8.0;
+    const float r_scale = 8.0;
     Matrix Q = Matrix::Zero(n, n);
     for (int i = 0; i < N; ++i) {
-        Q(i, i) = 20.0f;
+        Q(i, i) = 20.0f / q_scale;
     }
-    Q(N, N) = 10.0f;
+    Q(N, N) = 10.0f / (q_scale * 4);
 
     Matrix R = Matrix::Zero(n, n);
     for (int i = 0; i < N; ++i) {
-        R(i, i) = 1.0f;
+        R(i, i) = 1.0f / r_scale;
     }
-    R(N, N) = 10.0f;
+    R(N, N) = 10.0f / (r_scale *4);
 
     // -------------------------------------------------------------------------
     // Optional scaling to improve conditioning
@@ -1532,14 +1535,14 @@ int main(int argc,char*argv[])
         0.02831200f,
         0.08079800f
     };
-
+    
     const float base_last_row[6] = {
-        22.20753300f,
-        11.07223000f,
-        28.52230300f,
-        7.38135200f,
-        13.56965500f,
-        15.28722400f
+        0.02220753300f,
+        0.01107223000f,
+        0.02852230300f,
+        0.0738135200f,
+        0.01356965500f,
+        0.01528722400f
     };
 
     
@@ -1573,11 +1576,12 @@ int main(int argc,char*argv[])
 
     // last row: use posted values
     for (int j = 0; j < numtasks; ++j) {
-        doublegain[numtasks][j] = base_last_row[j];
+        doublegain[numtasks][j] = base_last_row[j] * 100.0;
     }
 
     // bottom-right element
     doublegain[numtasks][numtasks] = base_bottom_right;
+    
     for (int i = 0; i < numtasks + 1; ++i) {
         for (int j = 0; j < numtasks + 1; ++j) {
             doublegain[i][j] = doublegain[i][j] / 10;
