@@ -3,18 +3,16 @@ set -euo pipefail
 
 APP_DIR="../application"     
 SCHED_DIR="../Scheduler"     
-LOG_ROOT="./logs_JPAP_no_bounds"        
+LOG_ROOT="logs/FC_GPU"        
 
 # Available workloads
 workloads=(
-  #histogram_converted
-  #particle_converted
-  #quasirand_converted
-  histogram_converted
-  stereodisparity_converted
-  mm_converted
-  #bfs_converted
-  #bfs_converted
+  #particle
+  #quasi
+  hist
+  stereo
+  mm
+  #bfs
 )
 
 # Generate all unique 3-workload combinations
@@ -30,7 +28,12 @@ done
 #default_rates=(0.060 0.100 0.060)
 default_rates=(0.160 0.080 0.0600)
 duration=240
-solution=3
+
+FC_GPU=1
+N_PLUS_ONE=2
+LQR=3
+solution=$FC_GPU
+
 setpoint_combos=(
   "0.80 0.80 0.80"
 )
@@ -81,31 +84,33 @@ cleanup_tasks() {
 compile_tasks() {
   local index=1
   echo "Compiling workloads from: $APP_DIR/"
-  for task_name in "$@"; do
-    local src="${APP_DIR}/${task_name}.cu"
-    [[ -f "$src" ]] || { echo "ERROR: missing workload: $src" >&2; exit 1; }
+  make -C $APP_DIR EXTRA_FLAGS="-DJetson"
+  #for task_name in "$@"; do
+  #  local src="${APP_DIR}/${task_name}.cu"
+  #  [[ -f "$src" ]] || { echo "ERROR: missing workload: $src" >&2; exit 1; }
 
-    echo "Compiling $task_name as t$index..."
-    if [[ "$task_name" == "dxtc" ]]; then
-      nvcc -o "t$index" "$src" \
-        -I ../Common/ -I ../Samples/5_Domain_Specific/dxtc/ \
-        -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
-    else
-      nvcc -o "t$index" "$src" \
-        -I ../Common/ -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
-    fi
-    ((index++))
-  done
+  #  echo "Compiling $task_name as t$index..."
+  #  if [[ "$task_name" == "dxtc" ]]; then
+  #    nvcc -o "t$index" "$src" \
+  #      -I ../Common/ -I ../Samples/5_Domain_Specific/dxtc/ \
+  #      -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
+  #  else
+  #    nvcc -o "t$index" "$src" \
+  #      -I ../Common/ -L ../Common/ -lcudart -DT$index -DJetson -std=c++17
+  #  fi
+  #  ((index++))
+  #done
 }
 
 compile_server() {
   echo "Compiling controller from: $SCHED_DIR/"
-  local src="${SCHED_DIR}/controller.cc"
-  local src2="${SCHED_DIR}/scheduler.cc"
-  [[ -f "$src" ]] || { echo "ERROR: missing controller: $src" >&2; exit 1; }
-  [[ -f "$src2" ]] || { echo "ERROR: missing scheduler: $src2" >&2; exit 1; }
-  g++ "$src" -o server -std=c++17 -lrt -pthread -I /usr/include/eigen3 -DJetson #-DCLAMP_PERIODS -DBOUND=50
-  g++ "$src2" -o scheduler -std=c++17 -lrt -pthread 
+  make -C $SCHED_DIR EXTRA_FLAGS="-DJetson" #-DCLAMP_PERIODS -DBOUND=50
+  #local src="${SCHED_DIR}/controller.cc"
+  #local src2="${SCHED_DIR}/scheduler.cc"
+  #[[ -f "$src" ]] || { echo "ERROR: missing controller: $src" >&2; exit 1; }
+  #[[ -f "$src2" ]] || { echo "ERROR: missing scheduler: $src2" >&2; exit 1; }
+  #g++ "$src" -o server -std=c++17 -lrt -pthread -I /usr/include/eigen3 -DJetson #-DCLAMP_PERIODS -DBOUND=50
+  #g++ "$src2" -o scheduler -std=c++17 -lrt -pthread 
 }
 
 run_combination() {
@@ -133,25 +138,31 @@ run_combination() {
   echo "Logs at: $comb_log_dir"
 
   for sp_line in "${setpoint_combos[@]}"; do
+   
     read -r -a setpoints <<< "$sp_line"
-
+    
     if [[ "${#setpoints[@]}" -ne "$num_tasks" ]]; then
       echo "ERROR: setpoints '$sp_line' has ${#setpoints[@]} values but num_tasks=$num_tasks" >&2
       exit 1
     fi
-
+    
     local sp_dir="${comb_log_dir}/setpoint_$(echo "$sp_line" | tr ' ' '_')"
     mkdir -p "$sp_dir"
-
+    
+    local scheduler_bin="../Scheduler/bin/scheduler"
+    local app_bin_dir="../application/bin"
+    
     local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$ps_set")
-    echo $args
+    
     for ((i=0; i<num_tasks; i++)); do
-      taskname="t$((i+1))" 
-      args+=("$taskname" "${rates[i]}" "${setpoints[i]}")
+      #echo $workloads
+      taskname="${workloads[i]}"   # should contain bfs, hist, mm, particle, quasi, stereo
+      args+=("${app_bin_dir}/${taskname}" "${rates[i]}" "${setpoints[i]}")
     done
-
-    echo "Executing: ./scheduler ${args[*]}"
-    ./scheduler "${args[@]}"
+    
+    echo "Executing: ${scheduler_bin} ${args[*]}"
+    "${scheduler_bin}" "${args[@]}"
+ 
   done
 
   sleep 5

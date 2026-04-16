@@ -919,8 +919,8 @@ void FC_GPU(string path,logging& log, tasks& t, int numtasks,float** gain,std::a
         std::cout << "task\texec(ms)\tresp(ms)\trtr\terror\tPcur(s)\tPnext(ms)\tDeadline miss (%)\n";
         ctrlLog  << "task\texec(ms)\tresp(ms)\trtr\terror\tPcur(s)\tPnext(ms)\tDeadline miss (%)\n";
 
-        std::cout << std::fixed << std::setprecision(4);
-        ctrlLog  << std::fixed << std::setprecision(4);
+        std::cout << std::fixed << std::setprecision(3);
+        ctrlLog  << std::fixed << std::setprecision(3);
 
         for (int i = 0; i < numtasks; i++)
         {
@@ -1504,7 +1504,7 @@ int main(int argc,char*argv[])
     for (int i = 0; i < numtasks + 1; ++i) {
         LQRGain[i] = new float[numtasks + 1];
     }
-    compute_LQR_gain_2(LQRGain, numtasks);
+    if (solution ==3) compute_LQR_gain_2(LQRGain, numtasks);
     //compute_LQR_gain(LQRGain, numtasks);
     /*
     
@@ -1578,7 +1578,17 @@ int main(int argc,char*argv[])
 
     // bottom-right element
     doublegain[numtasks][numtasks] = base_bottom_right;
+    for (int i = 0; i < numtasks + 1; ++i) {
+        for (int j = 0; j < numtasks + 1; ++j) {
+            doublegain[i][j] = doublegain[i][j] / 10;
+        }
+    }
 
+
+
+
+
+    //fc-gpu gain
     for(int i = 0; i < numtasks; ++i) {
         gain[i] = new float[numtasks];
     }    
