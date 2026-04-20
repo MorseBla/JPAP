@@ -1,0 +1,6 @@
+run_id,task,period_ms,freq_hz,logfile
+bfs_sweep_70,bfs,70,918000000,logs/diag/bfs/bfs_70ms__bfs_sweep_70.json
+bfs_sweep_80,bfs,80,918000000,logs/diag/bfs/bfs_80ms__bfs_sweep_80.json
+bfs_sweep_90,bfs,90,918000000,logs/diag/bfs/bfs_90ms__bfs_sweep_90.json
+bfs_sweep_100,bfs,100,918000000,logs/diag/bfs/bfs_100ms__bfs_sweep_100.json
+bfs_sweep_110,bfs,110,918000000,logs/diag/bfs/bfs_110ms__bfs_sweep_110.json

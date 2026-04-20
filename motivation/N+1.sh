@@ -35,7 +35,8 @@ LQR=3
 solution=$N_PLUS_ONE
 
 setpoint_combos=(
-  "0.80 0.80 0.80"
+  #"0.80 0.80 0.80"
+  "0.70 0.70 0.70"
 )
 ps_set=5000
 

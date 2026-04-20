@@ -1,0 +1,8 @@
+task_id=0 response_ms=55.6563 kernel_plus_memory_ms=54.0528 kernel_only_ms=45.8571 h2d_ms=8.19574 d2h_ms=0
+task_id=1 response_ms=46.727 kernel_plus_memory_ms=46.6626 kernel_only_ms=38.3167 h2d_ms=8.34586 d2h_ms=0
+task_id=2 response_ms=56.8337 kernel_plus_memory_ms=56.6908 kernel_only_ms=53.0825 h2d_ms=3.60826 d2h_ms=0
+task_id=3 response_ms=73.6692 kernel_plus_memory_ms=73.5988 kernel_only_ms=69.5771 h2d_ms=4.02179 d2h_ms=0
+task_id=4 response_ms=13.9724 kernel_plus_memory_ms=9.01738 kernel_only_ms=0.50112 h2d_ms=8.51626 d2h_ms=0
+task_id=5 response_ms=41.894 kernel_plus_memory_ms=41.817 kernel_only_ms=38.144 h2d_ms=3.67302 d2h_ms=0
+task_id=6 response_ms=41.6171 kernel_plus_memory_ms=41.5667 kernel_only_ms=38.4087 h2d_ms=3.15795 d2h_ms=0
+task_id=7 response_ms=52.086 kernel_plus_memory_ms=52.0229 kernel_only_ms=48.6884 h2d_ms=3.33453 d2h_ms=0

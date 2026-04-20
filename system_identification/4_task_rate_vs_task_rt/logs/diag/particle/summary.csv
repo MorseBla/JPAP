@@ -1,0 +1,6 @@
+run_id,task,period_ms,freq_hz,logfile
+particle_sweep_70,particle,70,918000000,logs/diag/particle/particle_70ms__particle_sweep_70.json
+particle_sweep_80,particle,80,918000000,logs/diag/particle/particle_80ms__particle_sweep_80.json
+particle_sweep_90,particle,90,918000000,logs/diag/particle/particle_90ms__particle_sweep_90.json
+particle_sweep_100,particle,100,918000000,logs/diag/particle/particle_100ms__particle_sweep_100.json
+particle_sweep_110,particle,110,918000000,logs/diag/particle/particle_110ms__particle_sweep_110.json

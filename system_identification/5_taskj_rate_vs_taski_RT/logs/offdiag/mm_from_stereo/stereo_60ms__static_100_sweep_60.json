@@ -1,0 +1,19 @@
+{
+  "platform": "jetson",
+  "workload": "stereodisparity_releaseguard",
+  "width": 2304,
+  "height": 1728,
+  "period_s": 0.06,
+  "duration_s": 60,
+  "jobs": 1,
+  "power_sample_period_ms": 100,
+  "avg_response_ms": 41.5214,
+  "avg_ke_ms": 35.9106,
+  "avg_memory_ms": 5.60471,
+  "avg_h2d_ms": 2.70359,
+  "avg_d2h_ms": 2.90113,
+  "avg_measured_freq_mhz": 918,
+  "avg_power_w": 10.9801,
+  "monitor_samples": 468,
+  "num_released_jobs": 996
+}

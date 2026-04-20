@@ -417,6 +417,7 @@ int main(int argc, char *argv[]) {
 
     std::signal(SIGINT, handleSIGINT);
 
+    usleep(1000);
     key_t key = ftok("shmfile", 65);
     int shmid = shmget(key, sizeof(SharedData), 0666);
     if (shmid < 0) {

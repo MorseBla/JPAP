@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 #include <filesystem>
-
+#include "shared_header.hpp"
 #define MAX_THREADS_PER_BLOCK 256
 
 #define CUDA_CHECK(call)                                                                           \
@@ -252,7 +252,9 @@ class BFSBenchmark {
 
             do {
                 over = false;
+    
 
+                GpuLockGuard lock(gpu_sem); 
                 CUDA_CHECK(cudaMemcpyAsync(d_over, &over, sizeof(bool),
                                         cudaMemcpyHostToDevice, stream));
 
@@ -275,7 +277,7 @@ class BFSBenchmark {
                             << ", forcing termination.\n";
                     break;
                 }
-            } while (over);
+            } while (!over);
 
             CUDA_CHECK(cudaEventRecord(stopEv, stream));
             CUDA_CHECK(cudaEventSynchronize(stopEv));

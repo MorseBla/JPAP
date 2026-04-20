@@ -188,7 +188,7 @@ private:
 float service::kernellaunch(dim3 gridDim, dim3 blockDim, double carry_ms)
 {
     float sum_kernel_ms = 0.0f;
-
+    GpuLockGuard lock(gpu_sem);
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startEv, stream));
         matMulKernel<<<gridDim, blockDim, 0, stream>>>(d_A, d_B, d_C, N);

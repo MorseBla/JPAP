@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 #include <cmath>
-
+#include "shared_header.hpp"
 #define CUDA_CHECK(call)                                                                           \
     do {                                                                                           \
         cudaError_t _e = (call);                                                                   \
@@ -227,11 +227,13 @@ void task(int id) {
     CUDA_CHECK(cudaEventElapsedTime(&h2d_ms, startH2D, stopH2D));
     total_h2d_ms += h2d_ms;
 
+    GpuLockGuard lock(gpu_sem); 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startKernel));
         particleKernel<<<gridDim, blockDim>>>(d_arrayX, d_arrayY, d_CDF, d_u, d_xj, d_yj, g_num_particles);
         CUDA_CHECK(cudaEventRecord(stopKernel));
         CUDA_CHECK(cudaEventSynchronize(stopKernel));
+        CUDA_CHECK(cudaGetLastError());
 
         float kernel_ms = 0.0f;
         CUDA_CHECK(cudaEventElapsedTime(&kernel_ms, startKernel, stopKernel));

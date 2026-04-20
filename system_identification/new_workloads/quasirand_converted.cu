@@ -13,7 +13,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-
+#include "shared_header.hpp"
 #define CUDA_CHECK(call)                                                                           \
     do {                                                                                           \
         cudaError_t _e = (call);                                                                   \
@@ -186,6 +186,7 @@ void task(int id) {
     CUDA_CHECK(cudaEventElapsedTime(&h2d_ms, startH2D, stopH2D));
     total_h2d_ms += h2d_ms;
 
+    GpuLockGuard lock(gpu_sem); 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startKernel));
         quasirandKernel<<<gridDim, blockDim>>>(d_out, g_num_elements, 1234567u + static_cast<unsigned int>(i));

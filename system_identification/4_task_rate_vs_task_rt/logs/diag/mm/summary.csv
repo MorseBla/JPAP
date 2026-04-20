@@ -1,0 +1,6 @@
+run_id,task,period_ms,freq_hz,logfile
+mm_sweep_70,mm,70,918000000,logs/diag/mm/mm_70ms__mm_sweep_70.json
+mm_sweep_80,mm,80,918000000,logs/diag/mm/mm_80ms__mm_sweep_80.json
+mm_sweep_90,mm,90,918000000,logs/diag/mm/mm_90ms__mm_sweep_90.json
+mm_sweep_100,mm,100,918000000,logs/diag/mm/mm_100ms__mm_sweep_100.json
+mm_sweep_110,mm,110,918000000,logs/diag/mm/mm_110ms__mm_sweep_110.json

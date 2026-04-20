@@ -1,0 +1,6 @@
+run_id,task,period_ms,freq_hz,logfile
+quasi_sweep_70,quasi,70,918000000,logs/diag/quasi/quasi_70ms__quasi_sweep_70.json
+quasi_sweep_80,quasi,80,918000000,logs/diag/quasi/quasi_80ms__quasi_sweep_80.json
+quasi_sweep_90,quasi,90,918000000,logs/diag/quasi/quasi_90ms__quasi_sweep_90.json
+quasi_sweep_100,quasi,100,918000000,logs/diag/quasi/quasi_100ms__quasi_sweep_100.json
+quasi_sweep_110,quasi,110,918000000,logs/diag/quasi/quasi_110ms__quasi_sweep_110.json

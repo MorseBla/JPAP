@@ -543,6 +543,200 @@ void proposed(std::string path,
 }
 
 
+void dfs(std::string path,
+                    logging& log,
+                    tasks& t,
+                    int numtasks,
+                    std::atomic<bool>& controllerlooping,
+                    float powersetpoint,
+                    logging_sys& logsys)
+{
+    std::cout << "DFS running with " << numtasks << " tasks\n";
+
+    // gain
+    float kp = 0.05;
+
+    std::thread freqthread;
+    int controlperiod = 0;
+
+    float* error = new float[numtasks];
+    float* rtr = new float[numtasks];
+    float* executiontime = new float[numtasks];
+    float* responsetime = new float[numtasks];
+    float* taskperiod = new float[numtasks];
+    float* newtaskperiod = new float[numtasks];
+    float* deadlinemiss = new float[numtasks];
+    float* upperbound = new float[numtasks];
+    float* lowerbound = new float[numtasks];
+
+    float measuredpower = 0.0f;
+    float powererror = 0.0f;
+
+    average average;
+    auto start = std::chrono::steady_clock::now();
+    std::ofstream ctrlLog("logs/controller.txt", std::ios::app);
+
+    std::filesystem::path base_path(path);
+    std::vector<std::string> exec_paths(numtasks);
+    std::vector<std::string> resp_paths(numtasks);
+
+    for (int i = 0; i < numtasks; ++i) {
+        exec_paths[i] = (base_path / ("taskexecutiontime" + std::to_string(i) + ".txt")).string();
+        resp_paths[i] = (base_path / ("taskresponsetime" + std::to_string(i) + ".txt")).string();
+    }
+
+    while (controllerlooping.load(std::memory_order_relaxed))
+    {
+        std::this_thread::sleep_for(std::chrono::duration<float>(outerloopduration));
+
+        stopsigma.store(true, std::memory_order_relaxed);
+        if (freqthread.joinable()) {
+            freqthread.join();
+        }
+
+        auto end = std::chrono::steady_clock::now();
+        std::cout << "Current time =\t"
+                  << std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
+                  << "\n";
+        std::cout << "Control Period = " << controlperiod << "\n";
+
+        // Gather per-task measurements for logging only
+        for (int i = 0; i < numtasks; i++)
+        {
+            std::vector<float> local_rtr, local_resp, local_per, local_exec;
+            {
+                std::lock_guard<std::mutex> lk(log[i].mtx);
+                local_rtr  = std::move(log[i].rtr);
+                local_resp = std::move(log[i].response);
+                local_per  = std::move(log[i].period);
+                local_exec = std::move(log[i].exec);
+            }
+
+            rtr[i]           = average.calculateAverage(local_rtr);
+            responsetime[i]  = average.calculateAverage(local_resp);
+            taskperiod[i]    = average.calculateAverage(local_per);
+            executiontime[i] = average.calculateAverage(local_exec);
+            deadlinemiss[i]  = calculate_deadline_miss(local_resp, local_per, 0.05f);
+
+            error[i] = t[i].setpoint - rtr[i];
+
+            append_lock(exec_paths[i], "Control Period");
+            append_lock(resp_paths[i], "Control Period");
+        }
+
+        std::vector<float> local_power;
+        {
+            local_power = std::move(logsys.power.measuredpower);
+        }
+
+        measuredpower = average.calculateAverage(local_power);
+        powererror = powersetpoint - measuredpower;
+
+        std::cout << "Measured Power = " << measuredpower << " W\n";
+        std::cout << "Power Setpoint = " << powersetpoint << " W\n";
+        std::cout << "Power Error    = " << powererror << " W\n";
+
+        float delta_freq = kp * powererror;
+
+        float measured = current_freq.load(std::memory_order_relaxed);
+        float next = measured + delta_freq;
+
+        #ifdef Jetson
+            next = std::clamp(next, 306.0f, 1020.0f);
+        #else
+            next = std::clamp(next, 210.0f, 2100.0f);
+        #endif
+
+        current_freq.store(next, std::memory_order_relaxed);
+
+        std::cout << "Current freq       = " << measured << " MHz\n";
+        std::cout << "Delta freq         = " << delta_freq << " MHz\n";
+        std::cout << "New freq (command) = " << next << " MHz\n";
+
+        stopsigma.store(false, std::memory_order_relaxed);
+        freqthread = std::thread(sigmadelta_freq_step, next);
+
+        double ts = std::chrono::duration<double>(end - start).count();
+        std::cout << "time=" << ts << "  control_period=" << controlperiod << "\n";
+        ctrlLog  << "time=" << ts << "  control_period=" << controlperiod << "\n";
+
+        std::cout << "task\texec(ms)\tresp(ms)\trtr\tRTR_err\tPcur(ms)\tPnext(ms)\tDeadline miss (%)\n";
+        ctrlLog  << "task\texec(ms)\tresp(ms)\trtr\tRTR_err\tPcur(ms)\tPnext(ms)\tDeadline miss (%)\n";
+
+        std::cout << std::fixed << std::setprecision(4);
+        ctrlLog  << std::fixed << std::setprecision(4);
+
+        for (int i = 0; i < numtasks; i++)
+        {
+            float initial = t[i].initial_rate;
+            float min_p = initial * 0.90f;
+            float max_p = initial * 1.10f;
+            upperbound[i] = max_p;
+            lowerbound[i] = min_p;
+
+            newtaskperiod[i] = taskperiod[i];
+
+            std::cout << "T" << (i + 1) << "\t"
+                      << executiontime[i] << "\t\t"
+                      << responsetime[i]  << "\t\t"
+                      << rtr[i]           << "\t"
+                      << error[i]         << "\t"
+                      << taskperiod[i]    << "\t"
+                      << newtaskperiod[i] << "\t"
+                      << deadlinemiss[i]  << "\n";
+
+            ctrlLog  << "T" << (i + 1) << "\t"
+                     << executiontime[i] << "\t"
+                     << responsetime[i]  << "\t"
+                     << rtr[i]           << "\t"
+                     << error[i]         << "\t"
+                     << taskperiod[i]    << "\t"
+                     << newtaskperiod[i] << "\t"
+                     << deadlinemiss[i]  << "\n";
+
+            {
+                std::lock_guard<std::mutex> lk(log[i].mtx);
+                log[i].filewritexec.push_back(executiontime[i]);
+                log[i].filewriteresponse.push_back(responsetime[i]);
+                log[i].filewriteperiod.push_back(taskperiod[i]);
+                log[i].filewritertr.push_back(rtr[i]);
+                log[i].filewritelowperiodbound.push_back(lowerbound[i] * 1000.0f);
+                log[i].filewritehighperiodbound.push_back(upperbound[i] * 1000.0f);
+                log[i].filewritedeadlinemiss.push_back(deadlinemiss[i]);
+            }
+        }
+
+        logsys.power.powersetpoints.push_back(powersetpoint);
+        logsys.power.powerseterror.push_back(powererror);
+        logsys.power.powercontrolperiod.push_back(measuredpower);
+
+        ctrlLog << "Power\t" << measuredpower
+                << "\tPerror\t" << powererror
+                << "\tDeltaFreq\t" << delta_freq << "\n";
+
+        std::cout << "*****************************************************************\n\n";
+        ctrlLog  << "*****************************************************************\n\n";
+        ctrlLog.flush();
+
+        controlperiod++;
+    }
+
+    stopsigma.store(true, std::memory_order_relaxed);
+    if (freqthread.joinable()) {
+        freqthread.join();
+    }
+
+    delete[] error;
+    delete[] rtr;
+    delete[] executiontime;
+    delete[] responsetime;
+    delete[] taskperiod;
+    delete[] newtaskperiod;
+    delete[] deadlinemiss;
+    delete[] upperbound;
+    delete[] lowerbound;
+}
+
 void FC_GPU_and_power( string path, logging& log, tasks& t,int numtasks,float** doublegain,std::atomic<bool>& controllerlooping,float powersetpoint,
     logging_sys& logsys)
 {
@@ -1350,8 +1544,13 @@ void compute_LQR_gain_2(float** gain, int numtasks) //this one works for less th
     // -------------------------------------------------------------------------
     Matrix B = Matrix::Zero(n, n);
 
+    //for (int i = 0; i < N; ++i) {
+    //    B(i, i) = 1.0f;   // replace later with measured -dRT/dT
+    //}
     for (int i = 0; i < N; ++i) {
-        B(i, i) = 1.0f;   // replace later with measured -dRT/dT
+        for (int j = 0; j < N; ++j) {
+            if (i != j)  B(i, i) = 1.0f;
+        }
     }
 
     for (int i = 0; i < N; ++i) {
@@ -1477,7 +1676,9 @@ int main(int argc,char*argv[])
         return 1;
     }
     key_t key = ftok("shmfile", 65);
+    usleep(1000);
     int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+
     bool createdshm;
     if(shmid>0){
         sharedData = (SharedData*)shmat(shmid, nullptr, 0);
@@ -1715,13 +1916,13 @@ int main(int argc,char*argv[])
     std::thread controllerThread2;
     std::this_thread::sleep_for(std::chrono::seconds(5));
     switch (solution) {
-        case 1:
+        case 1: //FC
             controllerThread = std::thread(FC_GPU, path, std::ref(log), std::ref(task), numtasks, gain,std::ref(controllerlooping),powersetpoint,std::ref(logsys));
             break;
-        case 2:
+        case 2: //N+1
             controllerThread = std::thread(proposed, path, std::ref(log), std::ref(task), numtasks, doublegain,std::ref(controllerlooping),powersetpoint,std::ref(logsys));
             break;
-        case 3:
+        case 3: //LQR
             controllerThread = std::thread(proposed, path, std::ref(log), std::ref(task), numtasks, LQRGain,std::ref(controllerlooping),powersetpoint,std::ref(logsys));
             break;
         case 4:
@@ -1732,6 +1933,9 @@ int main(int argc,char*argv[])
             break;
         case 6:
             controllerThread = std::thread(siso, std::ref(log), std::ref(task), numtasks, std::ref(controllerlooping),powersetpoint,std::ref(logsys));
+            break;
+        case 7: //DFS only
+            controllerThread = std::thread( dfs, path, std::ref(log), std::ref(task), numtasks, std::ref(controllerlooping), powersetpoint, std::ref(logsys)); 
             break;
         default:
             std::cerr << "ERROR: unknown solution id " << solution << "\n";

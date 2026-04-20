@@ -13,7 +13,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-
+#include "shared_header.hpp"
 #define BLOCK_X 32
 #define BLOCK_Y 8
 #define RAD 8
@@ -324,6 +324,7 @@ void task(int id) {
     CUDA_CHECK(cudaEventElapsedTime(&h2d_ms, startH2D, stopH2D));
     total_h2d_ms += h2d_ms;
 
+    GpuLockGuard lock(gpu_sem); 
     for (int i = 0; i < jobs; ++i) {
         CUDA_CHECK(cudaEventRecord(startKernel));
         stereoDisparityKernel<<<gridDim, blockDim>>>(

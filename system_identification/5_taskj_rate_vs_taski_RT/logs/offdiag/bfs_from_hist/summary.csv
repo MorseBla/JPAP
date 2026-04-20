@@ -1,0 +1,10 @@
+run_id,static_task,static_period_ms,sweep_task,sweep_period_ms,freq_hz,static_log,sweep_log
+static_100_sweep_60,bfs,100,hist,60,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_60.json,logs/offdiag/bfs_from_hist/hist_60ms__static_100_sweep_60.json
+static_100_sweep_65,bfs,100,hist,65,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_65.json,logs/offdiag/bfs_from_hist/hist_65ms__static_100_sweep_65.json
+static_100_sweep_70,bfs,100,hist,70,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_70.json,logs/offdiag/bfs_from_hist/hist_70ms__static_100_sweep_70.json
+static_100_sweep_75,bfs,100,hist,75,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_75.json,logs/offdiag/bfs_from_hist/hist_75ms__static_100_sweep_75.json
+static_100_sweep_80,bfs,100,hist,80,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_80.json,logs/offdiag/bfs_from_hist/hist_80ms__static_100_sweep_80.json
+static_100_sweep_85,bfs,100,hist,85,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_85.json,logs/offdiag/bfs_from_hist/hist_85ms__static_100_sweep_85.json
+static_100_sweep_90,bfs,100,hist,90,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_90.json,logs/offdiag/bfs_from_hist/hist_90ms__static_100_sweep_90.json
+static_100_sweep_95,bfs,100,hist,95,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_95.json,logs/offdiag/bfs_from_hist/hist_95ms__static_100_sweep_95.json
+static_100_sweep_100,bfs,100,hist,100,918000000,logs/offdiag/bfs_from_hist/bfs_100ms__static_100_sweep_100.json,logs/offdiag/bfs_from_hist/hist_100ms__static_100_sweep_100.json

@@ -1,0 +1,6 @@
+run_id,task,period_ms,freq_hz,logfile
+stereo_sweep_70,stereo,70,918000000,logs/diag/stereo/stereo_70ms__stereo_sweep_70.json
+stereo_sweep_80,stereo,80,918000000,logs/diag/stereo/stereo_80ms__stereo_sweep_80.json
+stereo_sweep_90,stereo,90,918000000,logs/diag/stereo/stereo_90ms__stereo_sweep_90.json
+stereo_sweep_100,stereo,100,918000000,logs/diag/stereo/stereo_100ms__stereo_sweep_100.json
+stereo_sweep_110,stereo,110,918000000,logs/diag/stereo/stereo_110ms__stereo_sweep_110.json
