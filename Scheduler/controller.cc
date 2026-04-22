@@ -663,8 +663,8 @@ void dfs(std::string path,
         std::cout << "task\texec(ms)\tresp(ms)\trtr\tRTR_err\tPcur(ms)\tPnext(ms)\tDeadline miss (%)\n";
         ctrlLog  << "task\texec(ms)\tresp(ms)\trtr\tRTR_err\tPcur(ms)\tPnext(ms)\tDeadline miss (%)\n";
 
-        std::cout << std::fixed << std::setprecision(4);
-        ctrlLog  << std::fixed << std::setprecision(4);
+        std::cout << std::fixed << std::setprecision(3);
+        ctrlLog  << std::fixed << std::setprecision(3);
 
         for (int i = 0; i < numtasks; i++)
         {
@@ -1244,8 +1244,8 @@ void openloop(logging& log, tasks& t, int numtasks, std::atomic<bool>& controlle
         ctrlLog  << "time=" << ts << "  control_period=" << controlperiod << "\n";
         std::cout << "task\texec(ms)\tresp(ms)\trtr\terror\tPcur(s)\tPnext(s)\n";
         ctrlLog  << "task\texec(ms)\tresp(ms)\trtr\terror\tPcur(s)\tPnext(s)\n";
-        std::cout << std::fixed << std::setprecision(4);
-        ctrlLog  << std::fixed << std::setprecision(4);
+        std::cout << std::fixed << std::setprecision(3);
+        ctrlLog  << std::fixed << std::setprecision(3);
 
         for (int i = 0; i < numtasks; i++)
         {
@@ -1873,11 +1873,12 @@ int main(int argc,char*argv[])
     
     std::unordered_map<int, std::string> mappings = {
             {1, "FC_GPU"},
-            {2, "FC_GPU+1"},
-            {3, "Proposed"},
+            {2, "N+1"},
+            {3, "LQR"},
             {4, "OpenLoop"},
             {5, "Adhoc"},
             {6, "SISO"},
+            {7, "DFS"},
         };
     
     std::cout << "Solution = " << (mappings.count(solution) ? mappings[solution] : "UNKNOWN") << "\n";

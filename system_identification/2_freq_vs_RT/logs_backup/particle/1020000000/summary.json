@@ -1,0 +1,18 @@
+{
+  "platform": "jetson",
+  "workload": "particle_releaseguard",
+  "num_particles": 21948,
+  "period_s": 0.1,
+  "duration_s": 60,
+  "jobs": 1,
+  "power_sample_period_ms": 100,
+  "avg_response_ms": 36.1402,
+  "avg_ke_ms": 36.0362,
+  "avg_memory_ms": 0.26074,
+  "avg_h2d_ms": 0.127646,
+  "avg_d2h_ms": 0.133094,
+  "avg_measured_freq_mhz": 1020,
+  "avg_power_w": 6.20597,
+  "monitor_samples": 473,
+  "num_released_jobs": 599
+}

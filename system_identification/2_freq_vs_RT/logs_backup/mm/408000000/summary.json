@@ -1,0 +1,18 @@
+{
+  "platform": "jetson",
+  "workload": "mm_releaseguard",
+  "matrix_size": 1333,
+  "period_s": 0.1,
+  "duration_s": 60,
+  "jobs": 1,
+  "power_sample_period_ms": 100,
+  "avg_response_ms": 65.7212,
+  "avg_ke_ms": 65.5924,
+  "avg_memory_ms": 2.70319,
+  "avg_h2d_ms": 1.16946,
+  "avg_d2h_ms": 1.53373,
+  "avg_measured_freq_mhz": 408,
+  "avg_power_w": 7.66147,
+  "monitor_samples": 263,
+  "num_released_jobs": 599
+}

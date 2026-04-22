@@ -36,13 +36,15 @@ solution=$FC_GPU
 
 setpoint_combos=(
   "0.90 0.90 0.90"
-  "0.85 0.85 0.85"
   "0.80 0.80 0.80"
-  "0.75 0.75 0.75"
   "0.70 0.70 0.70"
-  "0.65 0.65 0.65"
 )
-ps_set=5000
+
+ps_set=(
+  5000
+  6000
+  7000
+)
 
 # -----------------------------
 # Helpers
@@ -120,33 +122,32 @@ run_combination() {
   echo "Running: ${workloads[*]}"
   echo "Rates:   ${rates[*]}"
   echo "Logs at: $comb_log_dir"
-
   for sp_line in "${setpoint_combos[@]}"; do
-   
-    read -r -a setpoints <<< "$sp_line"
-    
-    if [[ "${#setpoints[@]}" -ne "$num_tasks" ]]; then
-      echo "ERROR: setpoints '$sp_line' has ${#setpoints[@]} values but num_tasks=$num_tasks" >&2
-      exit 1
-    fi
-    
-    local sp_dir="${comb_log_dir}/setpoint_$(echo "$sp_line" | tr ' ' '_')"
-    mkdir -p "$sp_dir"
-    
-    local scheduler_bin="../Scheduler/bin/scheduler"
-    local app_bin_dir="../application/bin"
-    
-    local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$ps_set")
-    
-    for ((i=0; i<num_tasks; i++)); do
-      #echo $workloads
-      taskname="${workloads[i]}"   # should contain bfs, hist, mm, particle, quasi, stereo
-      args+=("${app_bin_dir}/${taskname}" "${rates[i]}" "${setpoints[i]}")
-    done
-    
-    echo "Executing: ${scheduler_bin} ${args[*]}"
-    "${scheduler_bin}" "${args[@]}"
+    for power in "${ps_set[@]}"; do 
+      read -r -a setpoints <<< "$sp_line"
+      
+      if [[ "${#setpoints[@]}" -ne "$num_tasks" ]]; then
+        echo "ERROR: setpoints '$sp_line' has ${#setpoints[@]} values but num_tasks=$num_tasks" >&2
+        exit 1
+      fi
+      
+      local sp_dir="${comb_log_dir}/setpoint_$(echo "$power")_$(echo "$sp_line" | tr ' ' '_')"
+      mkdir -p "$sp_dir"
+      local scheduler_bin="../Scheduler/bin/scheduler"
+      local app_bin_dir="../application/bin"
+       
+      local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$power")
+      
+      for ((i=0; i<num_tasks; i++)); do
+        #echo $workloads
+        taskname="${workloads[i]}"   # should contain bfs, hist, mm, particle, quasi, stereo
+        args+=("${app_bin_dir}/${taskname}" "${rates[i]}" "${setpoints[i]}")
+      done
+      
+      echo "Executing: ${scheduler_bin} ${args[*]}"
+      "${scheduler_bin}" "${args[@]}"
  
+    done
   done
 
   sleep 5

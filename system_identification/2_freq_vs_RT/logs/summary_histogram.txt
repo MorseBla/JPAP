@@ -1,3 +1,0 @@
-avg_response_ms 24.2276
-avg_ke_ms 24.0853
-avg_memory_ms 0.439997

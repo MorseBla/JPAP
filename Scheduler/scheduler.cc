@@ -165,6 +165,8 @@ int main(int argc, char*argv[]){
     launch_server(num_tasks,solution,duration,path,powersetpoint,taskset,task_pids); 
     pid_t server_pid = task_pids.back();
     task_pids.pop_back();                
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000)); 
     launch_tasks(num_tasks,taskset,duration,path,server_pid,task_pids);
     int status;
     waitpid(server_pid, &status, 0); 
