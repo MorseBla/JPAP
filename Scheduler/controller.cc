@@ -12,6 +12,7 @@ std::atomic<bool> outerlooprunning{true};
 std::atomic<bool> controllerlooping{true};
 std::atomic<bool> monitorthread{true};
 std::atomic<bool> stopsigma{false};
+std::atomic<bool> powerinterrup{false};
 float powersetpoint;
 
 #ifdef CLAMP_PERIODS
@@ -334,9 +335,17 @@ void proposed(std::string path,
         exec_paths[i] = (base_path / ("taskexecutiontime" + std::to_string(i) + ".txt")).string();
         resp_paths[i] = (base_path / ("taskresponsetime" + std::to_string(i) + ".txt")).string();
     }
-
+    #ifdef POWER_INTERRUPT
+    bool is_interrupted = false;
+    #else
+    bool is_interrupted = true;
+    #endif    
     while (controllerlooping.load(std::memory_order_relaxed))
     {
+        if (!is_interrupted && powerinterrup.load()) {
+            is_interrupted = true;
+            powersetpoint = powersetpoint - 1000;  
+        }
         std::this_thread::sleep_for(std::chrono::duration<float>(innerloopduration));
 
         stopsigma.store(true, std::memory_order_relaxed);
@@ -584,9 +593,18 @@ void dfs(std::string path,
         exec_paths[i] = (base_path / ("taskexecutiontime" + std::to_string(i) + ".txt")).string();
         resp_paths[i] = (base_path / ("taskresponsetime" + std::to_string(i) + ".txt")).string();
     }
-
+    #ifdef POWER_INTERRUPT
+    bool is_interrupted = false;
+    #else
+    bool is_interrupted = true;
+    #endif    
+        
     while (controllerlooping.load(std::memory_order_relaxed))
     {
+        if (!is_interrupted && powerinterrup.load()) {
+            is_interrupted = true;
+            powersetpoint = powersetpoint - 1000;  
+        }
         std::this_thread::sleep_for(std::chrono::duration<float>(outerloopduration));
 
         stopsigma.store(true, std::memory_order_relaxed);
@@ -1288,6 +1306,267 @@ void openloop(logging& log, tasks& t, int numtasks, std::atomic<bool>& controlle
     delete[] deadlinemiss;
 }
 
+void openloop2(std::string path,
+              logging& log,
+              tasks& t,
+              int numtasks,
+              float** gain,
+              std::atomic<bool>& controllerlooping,
+              float powersetpoint,
+              logging_sys& logsys)
+{
+    std::cout << "Openloop2 running\n";
+
+    auto start = std::chrono::steady_clock::now();
+    int controlperiod = 0;
+    int N = numtasks;
+
+    float* delta = new float[N + 1];
+    float* error = new float[N + 1];
+
+    float* rtr = new float[N];
+    float* upperbound = new float[N];
+    float* lowerbound = new float[N];
+    float* executiontime = new float[N];
+    float* responsetime = new float[N];
+    float* desiredresponsetime = new float[N];
+    float* taskperiod = new float[N];
+    float* newtaskperiod = new float[N];
+    float* deadlinemiss = new float[N];
+
+    std::thread freqthread;
+
+    float measuredpower = 0.0f;
+    float measuredpowererror = 0.0f;
+
+    average average;
+    std::ofstream ctrlLog("logs/controller.txt", std::ios::app);
+
+    std::filesystem::path base_path(path);
+    std::vector<std::string> exec_paths(N);
+    std::vector<std::string> resp_paths(N);
+
+    for (int i = 0; i < N; ++i) {
+        exec_paths[i] = (base_path / ("taskexecutiontime" + std::to_string(i) + ".txt")).string();
+        resp_paths[i] = (base_path / ("taskresponsetime" + std::to_string(i) + ".txt")).string();
+    }
+    #ifdef POWER_INTERRUPT
+    bool is_interrupted = false;
+    #else
+    bool is_interrupted = true;
+    #endif    
+    while (controllerlooping.load(std::memory_order_relaxed))
+    {
+        if (!is_interrupted && powerinterrup.load()) {
+            is_interrupted = true;
+            powersetpoint = powersetpoint - 1000;  
+        }
+        std::this_thread::sleep_for(std::chrono::duration<float>(innerloopduration));
+
+        stopsigma.store(true, std::memory_order_relaxed);
+        if (freqthread.joinable()) {
+            freqthread.join();
+        }
+
+        auto end = std::chrono::steady_clock::now();
+        std::cout << "Control Period = " << controlperiod << "\n";
+
+        for (int i = 0; i < N; i++) {
+            std::vector<float> local_rtr, local_resp, local_per, local_exec;
+            {
+                std::lock_guard<std::mutex> lk(log[i].mtx);
+                local_rtr  = std::move(log[i].rtr);
+                local_resp = std::move(log[i].response);
+                local_per  = std::move(log[i].period);
+                local_exec = std::move(log[i].exec);
+            }
+            rtr[i]           = average.calculateAverage(local_rtr);
+            responsetime[i]  = average.calculateAverage(local_resp);
+            taskperiod[i]    = average.calculateAverage(local_per);
+            executiontime[i] = average.calculateAverage(local_exec);
+
+
+            //t[i].setpoint is RTR target, convert it into a response time target
+            desiredresponsetime[i] = t[i].setpoint * taskperiod[i];
+
+            deadlinemiss[i] = calculate_deadline_miss(local_resp, local_per, 0.00f);
+
+            //LQR state/error with rt, not rtr 
+            error[i] = desiredresponsetime[i] - responsetime[i];
+            
+            #ifdef DEBUG 
+                std::cout << "Size" << i
+                          << " samples: rtr=" << local_rtr.size()
+                          << " resp=" << local_resp.size()
+                          << " period=" << local_per.size()
+                          << " exec=" << local_exec.size()
+                          << "\n";
+            #endif
+            if (append_lock(exec_paths[i], "Control Period") < 0) cout << "Error \n\nin proposed\n\n";            
+            if (append_lock(resp_paths[i], "Control Period") < 0) cout << "Error \n\nin proposed\n\n";
+        }
+
+        std::vector<float> local_power;
+        {
+            local_power = std::move(logsys.power.measuredpower);
+        }
+
+        measuredpower = average.calculateAverage(local_power);
+        measuredpowererror = powersetpoint - measuredpower;
+        error[N] = measuredpowererror;
+
+        std::cout << "Measured Power = " << measuredpower
+                  << " Error = " << measuredpowererror << "\n";
+
+        for (int i = 0; i < N + 1; i++) {
+            delta[i] = 0.0f;
+            for (int j = 0; j < N + 1; j++) {
+                delta[i] += error[j] * (-gain[i][j]) ;
+            }
+            #ifdef DEBUG
+                std::cout << "delta[" << i << "] = " << delta[i] << "\n";
+            #endif
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            // taskperiod is in ms here
+            newtaskperiod[i] = taskperiod[i];
+            //newtaskperiod[i] = taskperiod[i] + delta[i];
+
+            // sharedData expects seconds
+            newtaskperiod[i] = newtaskperiod[i] / 1000.0f;
+        }
+
+        #ifdef CLAMP_PERIODS
+            for (int i = 0; i < N; i++) {
+                float initial = t[i].initial_rate;   // assumed to be in seconds
+                float min_p = initial * (1 - BOUND_VALUE);
+                float max_p = initial * (1 + BOUND_VALUE);
+                float original = newtaskperiod[i];
+                float clamped = std::clamp(original, min_p, max_p);
+
+                sharedData->newperiods[i] = clamped;
+                upperbound[i] = max_p;
+                lowerbound[i] = min_p;
+
+                if (clamped != original) {
+                    #ifdef DEBUG
+                        printf("Task %d clamped: original=%f clamped=%f min=%f max=%f\n",
+                           i, original, clamped, min_p, max_p);
+                    #endif
+                }
+            }
+        #else
+            for (int i = 0; i < N; i++) {
+                sharedData->newperiods[i] = newtaskperiod[i];
+                //upperbound[i] = 0.0f;
+                //lowerbound[i] = 0.0f;
+            }
+        #endif
+
+            float measured = current_freq.load(std::memory_order_relaxed);
+            float delta_freq = delta[N];
+            float next = measured;
+            //float next = measured + delta_freq;
+
+        #ifdef Jetson
+            next = std::clamp(next, 306.0f, 1020.0f);
+        #else
+            next = std::clamp(next, 210.0f, 2100.0f);
+        #endif
+
+        current_freq.store(next, std::memory_order_relaxed);
+
+        std::cout << "Current freq (SM) = " << measured << " MHz\n";
+        std::cout << "Delta freq        = " << delta_freq << " MHz\n";
+        std::cout << "New freq command  = " << next << " MHz\n";
+
+        stopsigma.store(false, std::memory_order_relaxed);
+        freqthread = std::thread(sigmadelta_freq_step, next);
+
+        double ts = std::chrono::duration<double>(end - start).count();
+        std::cout << "time=" << ts << "  control_period=" << controlperiod << "\n";
+        ctrlLog  << "time=" << ts << "  control_period=" << controlperiod << "\n";
+
+        std::cout << "task\t\tex(ms)\t\tRS(ms)\t\tRSn(ms)\t\trtr\n";
+        //std::cout << "task\t\texec(ms)\t\tresp(ms)\t\tdes_resp(ms)\t\trtr\t\terror\t\tPcur(ms)\t\tPnext(ms)\tDeadline miss (%)\n";
+        ctrlLog  << "task\texec(ms)\tresp(ms)\tdes_resp(ms)\trtr\terror\tPcur(ms)\tPnext(ms)\tDMR(%)\n";
+
+        std::cout << std::fixed << std::setprecision(3);
+        ctrlLog  << std::fixed << std::setprecision(3);
+        for (int i = 0; i < N; i++)
+        {
+            std::cout << "T" << (i + 1) << "\t\t"
+                      << executiontime[i] << "\t\t"
+                      << responsetime[i]  << "\t\t"
+                      << desiredresponsetime[i] << "\t\t"
+                      << rtr[i]           << "\t\n";
+        }
+        std::cout << "task\t\terr\t\tP(ms)\t\tPn(ms)\tDeadline miss (%)\n";
+
+        for (int i = 0; i < N; i++)
+        {
+            std::cout << "T" << (i + 1) << "\t\t"
+                      << error[i]         << "\t\t"
+                      << taskperiod[i]    << "\t\t"
+                      << newtaskperiod[i] * 1000.0f << "\t\t"
+                      << deadlinemiss[i]  << "\n";
+
+            ctrlLog  << "T" << (i + 1) << "\t"
+                     << executiontime[i] << "\t"
+                     << responsetime[i]  << "\t"
+                     << desiredresponsetime[i] << "\t"
+                     << rtr[i]           << "\t"
+                     << error[i]         << "\t"
+                     << taskperiod[i]    << "\t"
+                     << newtaskperiod[i] * 1000.0f << "\t"
+                     << deadlinemiss[i]  << "\n";
+
+            {
+                std::lock_guard<std::mutex> lk(log[i].mtx);
+                log[i].filewritexec.push_back(executiontime[i]);
+                log[i].filewriteresponse.push_back(responsetime[i]);
+                log[i].filewriteperiod.push_back(taskperiod[i]);
+                log[i].filewritertr.push_back(rtr[i]);
+                log[i].filewritelowperiodbound.push_back(lowerbound[i] * 1000.0f);
+                log[i].filewritehighperiodbound.push_back(upperbound[i] * 1000.0f);
+                log[i].filewritedeadlinemiss.push_back(deadlinemiss[i]);
+            }
+        }
+
+        logsys.power.powersetpoints.push_back(powersetpoint);
+        logsys.power.powerseterror.push_back(measuredpowererror);
+        logsys.power.powercontrolperiod.push_back(measuredpower);
+
+        ctrlLog << "Power\t" << measuredpower
+                << "\tPerror\t" << measuredpowererror
+                << "\tDeltaFreq\t" << delta_freq << "\n";
+
+        std::cout << "*****************************************************************\n\n";
+        ctrlLog  << "*****************************************************************\n\n";
+        ctrlLog.flush();
+
+        controlperiod++;
+    }
+
+    stopsigma.store(true, std::memory_order_relaxed);
+    if (freqthread.joinable()) {
+        freqthread.join();
+    }
+
+    delete[] delta;
+    delete[] error;
+    delete[] rtr;
+    delete[] upperbound;
+    delete[] lowerbound;
+    delete[] executiontime;
+    delete[] responsetime;
+    delete[] desiredresponsetime;
+    delete[] taskperiod;
+    delete[] newtaskperiod;
+    delete[] deadlinemiss;
+}
     
 void adhoc(logging& log, tasks& t, int numtasks, std::atomic<bool>& controllerlooping, float powersetpoint, logging_sys& logsys)
 {
@@ -1661,6 +1940,9 @@ void compute_LQR_gain_2(float** gain, int numtasks) //this one works for less th
 
 int main(int argc,char*argv[])
 {
+    #ifdef POWER_INTERRUPT
+    cout<<"\n\nPOWER INTERRUPT\n\n";
+    #endif
     signal(SIGHUP, signalHandler);
     std::cout << "Controller PID: " << getpid() << "\n";
     int numtasks= atoi(argv[1]);
@@ -1708,7 +1990,7 @@ int main(int argc,char*argv[])
     for (int i = 0; i < numtasks + 1; ++i) {
         LQRGain[i] = new float[numtasks + 1];
     }
-    if (solution ==3) compute_LQR_gain_2(LQRGain, numtasks);
+    if (solution == 3 || solution == 4) compute_LQR_gain_2(LQRGain, numtasks);
     //compute_LQR_gain(LQRGain, numtasks);
     /*
     
@@ -1926,8 +2208,8 @@ int main(int argc,char*argv[])
         case 3: //LQR
             controllerThread = std::thread(proposed, path, std::ref(log), std::ref(task), numtasks, LQRGain,std::ref(controllerlooping),powersetpoint,std::ref(logsys));
             break;
-        case 4:
-            controllerThread = std::thread(openloop, std::ref(log), std::ref(task), numtasks, std::ref(controllerlooping),powersetpoint,std::ref(logsys));
+        case 4: //openloop
+            controllerThread = std::thread(openloop2, path, std::ref(log), std::ref(task), numtasks, LQRGain,std::ref(controllerlooping),powersetpoint,std::ref(logsys));
             break;
         case 5:
             controllerThread = std::thread(adhoc, std::ref(log), std::ref(task), numtasks, std::ref(controllerlooping),powersetpoint,std::ref(logsys));
@@ -1947,11 +2229,17 @@ int main(int argc,char*argv[])
     }
    
     auto start = std::chrono::steady_clock::now();
+    bool is_interrupted = false;
     while (true) {
         auto now = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = now - start;
         if (10+elapsed.count() >= duration)
             break;
+        else if (!is_interrupted && 10 + elapsed.count() >= duration / 2) {
+            powerinterrup.store(true);
+            is_interrupted = true;
+            cout << "\n\n\nPOWER INTERRUPT\n\n\n";
+        }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }

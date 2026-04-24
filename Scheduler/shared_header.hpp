@@ -116,11 +116,12 @@ struct logging_sys{
     explicit logging_sys(int solution) : solution_id(solution) {};
     std::unordered_map<int, std::string> solution = {
             {1, "FC_GPU"},
-            {2, "DFS"},
-            {3, "Proposed"},
+            {2, "N+1"},
+            {3, "LQR"},
             {4, "OpenLoop"},
             {5, "Adhoc"},
             {6, "SISO"},
+            {7, "DFS"},
         };
     int solution_id;
     std::string solution_name() const
@@ -155,11 +156,12 @@ struct logging {
     const logtasks& operator[](size_t i) const { return tasks.at(i); }
     std::unordered_map<int, std::string> solution = {
             {1, "FC_GPU"},
-            {2, "DFS"},
-            {3, "Proposed"},
+            {2, "N+1"},
+            {3, "LQR"},
             {4, "OpenLoop"},
             {5, "Adhoc"},
             {6, "SISO"},
+            {7, "DFS"},
         };
     int solution_id;
 

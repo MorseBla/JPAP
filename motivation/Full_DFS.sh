@@ -27,6 +27,7 @@ done
 
 #default_rates=(0.060 0.100 0.060)
 default_rates=(0.160 0.080 0.0700)
+default_rates=(0.160 0.080 0.080)
 duration=240
 
 FC_GPU=1
