@@ -277,6 +277,7 @@ void service::runService()
         kill(pids, SIGNAL_TYPE);
         while (!gotSIGHUP) pause();
     }
+    
 #ifdef DEBUG
     std::cout << "Received Handshake\n";
 #endif
@@ -363,13 +364,12 @@ int main(int argc, char *argv[])
     int pid = atoi(argv[6]);
 
     std::signal(SIGINT, handleSIGINT);
-    usleep(1000);
     key_t key = ftok("shmfile", 65);
     int shmid = shmget(key, sizeof(SharedData), 0666);
     if (shmid < 0) {
         perror("shmget failed - segment does not exist. Did you start the server?");
         return 1;
-    }
+    } 
 
     sharedData = (SharedData*)shmat(shmid, nullptr, 0);
     if (sharedData == (void*)-1) {
