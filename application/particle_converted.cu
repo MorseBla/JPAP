@@ -27,7 +27,7 @@
 #include <future>
 #include <thread>
 
-#include "../Scheduler/shared_header.hpp"
+#include "../scheduler/shared_header.hpp"
 
 #define SIGNAL_TYPE SIGHUP
 
@@ -73,34 +73,34 @@ __global__ void particleKernel(double *arrayX, double *arrayY, double *CDF, doub
     }
 }
 
-static inline timespec ts_add_ns(timespec t, long long ns) {
-    t.tv_sec += ns / 1000000000LL;
-    t.tv_nsec += ns % 1000000000LL;
-    if (t.tv_nsec >= 1000000000L) {
-        t.tv_sec++;
-        t.tv_nsec -= 1000000000L;
-    }
-    return t;
-}
-
-static inline long long sec_to_ns(double s) {
-    return (long long)(s * 1e9);
-}
-
-static inline bool ts_ge(const timespec &a, const timespec &b) {
-    if (a.tv_sec != b.tv_sec) return a.tv_sec > b.tv_sec;
-    return a.tv_nsec >= b.tv_nsec;
-}
-
-static inline void sleep_until_monotonic_abs(const timespec &abs_ts) {
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &abs_ts, nullptr);
-}
-
-static inline double ts_diff_ms(const timespec &end, const timespec &start) {
-    long long sec = (long long)end.tv_sec - (long long)start.tv_sec;
-    long long nsec = (long long)end.tv_nsec - (long long)start.tv_nsec;
-    return (double)sec * 1000.0 + (double)nsec / 1e6;
-}
+//static inline timespec ts_add_ns(timespec t, long long ns) {
+//    //t.tv_sec += ns / 1000000000LL;
+//    //t.tv_nsec += ns % 1000000000LL;
+//    //if (t.tv_nsec >= 1000000000L) {
+//    //    t.tv_sec++;
+//    //    t.tv_nsec -= 1000000000L;
+//    //}
+//    return t;
+//}
+//
+//static inline long long sec_to_ns(double s) {
+//    return (long long)(s * 1e9);
+//}
+//
+//static inline bool ts_ge(const timespec &a, const timespec &b) {
+//    if (a.tv_sec != b.tv_sec) return a.tv_sec > b.tv_sec;
+//    return a.tv_nsec >= b.tv_nsec;
+//}
+//
+//static inline void sleep_until_monotonic_abs(const timespec &abs_ts) {
+//    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &abs_ts, nullptr);
+//}
+//
+//static inline double ts_diff_ms(const timespec &end, const timespec &start) {
+//    long long sec = (long long)end.tv_sec - (long long)start.tv_sec;
+//    long long nsec = (long long)end.tv_nsec - (long long)start.tv_nsec;
+//    return (double)sec * 1000.0 + (double)nsec / 1e6;
+//}
 
 static int pick_core_for_task(int task_id, int base_core = 1) {
     int ncpu = (int)sysconf(_SC_NPROCESSORS_ONLN);

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_DIR="../application"     
-SCHED_DIR="../Scheduler"     
+SCHED_DIR="../scheduler"     
 LOG_ROOT="logs/power_interrupt_DFS" 
 
 # Available workloads
@@ -135,7 +135,7 @@ run_combination() {
       
       local sp_dir="${comb_log_dir}/setpoint_$(echo "$power")_$(echo "$sp_line" | tr ' ' '_')"
       mkdir -p "$sp_dir"
-      local scheduler_bin="../Scheduler/bin/scheduler"
+      local scheduler_bin="../scheduler/bin/scheduler"
       local app_bin_dir="../application/bin"
        
       local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$power")

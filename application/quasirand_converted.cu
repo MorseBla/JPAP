@@ -25,7 +25,7 @@
 #include <fcntl.h>
 #include <sys/file.h>
 
-#include "../Scheduler/shared_header.hpp"
+#include "../scheduler/shared_header.hpp"
 
 #define SIGNAL_TYPE SIGHUP
 //e
@@ -96,34 +96,34 @@ __global__ void computeValue(unsigned int *results, const Real *points, unsigned
         results[bid] = blockSum;
 }
 
-// --- Boilerplate Real-Time Functions ---
-static inline timespec ts_add_ns(timespec t, long long ns) {
-    t.tv_sec += ns / 1000000000LL;
-    t.tv_nsec += ns % 1000000000LL;
-    if (t.tv_nsec >= 1000000000L) {
-        t.tv_sec++;
-        t.tv_nsec -= 1000000000L;
-    }
-    return t;
-}
-
-static inline long long sec_to_ns(double s) { return (long long)(s * 1e9); }
-
-static inline bool ts_ge(const timespec &a, const timespec &b) {
-    if (a.tv_sec != b.tv_sec)
-        return a.tv_sec > b.tv_sec;
-    return a.tv_nsec >= b.tv_nsec;
-}
-
-static inline void sleep_until_monotonic_abs(const timespec &abs_ts) {
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &abs_ts, nullptr);
-}
-
-static inline double ts_diff_ms(const timespec &end, const timespec &start) {
-    long long sec = (long long)end.tv_sec - (long long)start.tv_sec;
-    long long nsec = (long long)end.tv_nsec - (long long)start.tv_nsec;
-    return (double)sec * 1000.0 + (double)nsec / 1e6;
-}
+//// --- Boilerplate Real-Time Functions ---
+//static inline timespec ts_add_ns(timespec t, long long ns) {
+//    t.tv_sec += ns / 1000000000LL;
+//    t.tv_nsec += ns % 1000000000LL;
+//    if (t.tv_nsec >= 1000000000L) {
+//        t.tv_sec++;
+//        t.tv_nsec -= 1000000000L;
+//    }
+//    return t;
+//}
+//
+//static inline long long sec_to_ns(double s) { return (long long)(s * 1e9); }
+//
+//static inline bool ts_ge(const timespec &a, const timespec &b) {
+//    if (a.tv_sec != b.tv_sec)
+//        return a.tv_sec > b.tv_sec;
+//    return a.tv_nsec >= b.tv_nsec;
+//}
+//
+//static inline void sleep_until_monotonic_abs(const timespec &abs_ts) {
+//    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &abs_ts, nullptr);
+//}
+//
+//static inline double ts_diff_ms(const timespec &end, const timespec &start) {
+//    long long sec = (long long)end.tv_sec - (long long)start.tv_sec;
+//    long long nsec = (long long)end.tv_nsec - (long long)start.tv_nsec;
+//    return (double)sec * 1000.0 + (double)nsec / 1e6;
+//}
 
 static int pick_core_for_task(int task_id, int base_core = 1) {
     int ncpu = (int)sysconf(_SC_NPROCESSORS_ONLN);
@@ -216,19 +216,10 @@ static void print_cuda_versions_or_exit() {
     }
 }
 
-static inline timespec to_timespec(std::chrono::steady_clock::time_point tp) {
-    using namespace std::chrono;
-    auto ns = duration_cast<nanoseconds>(tp.time_since_epoch()).count();
-    timespec ts{};
-    ts.tv_sec = static_cast<time_t>(ns / 1000000000LL);
-    ts.tv_nsec = static_cast<long>(ns % 1000000000LL);
-    return ts;
-}
-
-static inline void sleep_until_steady(std::chrono::steady_clock::time_point tp) {
-    timespec ts = to_timespec(tp);
-    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &ts, nullptr);
-}
+//static inline void sleep_until_steady(std::chrono::steady_clock::time_point tp) {
+//    timespec ts = to_timespec(tp);
+//    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &ts, nullptr);
+//}
 
 // --- Service Class ---
 class service {

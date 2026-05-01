@@ -26,7 +26,7 @@
 #include <future>
 #include <thread>
 
-#include "../Scheduler/shared_header.hpp"
+#include "../scheduler/shared_header.hpp"
 
 #define SIGNAL_TYPE SIGHUP
 

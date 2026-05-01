@@ -1,0 +1,11 @@
+To run on other (NVIDIA)  devices:
+    1. You may have to change the power and frequency scripts and may run into errors due to firmware differences that will only be solved by making edits to the cuda kernel files or the controller/scheduler.cc files
+    2. Follow Jetson instructions:
+
+To run on Jetson orin nano:
+1. Go into system identification and run those tests to get B matrix. Run the plot.py and fit.py scripts to find the coefficients
+2. Go into motivation and run the desired tests
+3. Go into task interrupt directory to run that test
+4. Go into plot to plot the results
+
+ 

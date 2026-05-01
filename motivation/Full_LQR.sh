@@ -2,7 +2,7 @@
 set -euo pipefail
 
 APP_DIR="../application"     
-SCHED_DIR="../Scheduler"     
+SCHED_DIR="../scheduler"     
 LOG_ROOT="logs/Full_LQR"        
 
 # Available workloads
@@ -25,8 +25,6 @@ for ((i=0; i<${#workloads[@]}; i++)); do
   done
 done
 
-#default_rates=(0.060 0.100 0.060)
-default_rates=(0.160 0.080 0.0600)
 default_rates=(0.160 0.080 0.080)
 duration=240
 
@@ -39,9 +37,9 @@ solution=$LQR
 setpoint_combos=(
   "0.90 0.90 0.90"
   "0.85 0.85 0.85"
-  #"0.80 0.80 0.80"
-  #"0.75 0.75 0.75"
-  #"0.70 0.70 0.70"
+  "0.80 0.80 0.80"
+  "0.75 0.75 0.75"
+  "0.70 0.70 0.70"
 )
 
 ps_set=(
@@ -91,7 +89,7 @@ cleanup_tasks() {
 
   echo "Clearing logs/figures in current experiment folder..."
   rm -rf "${LOG_ROOT:?}/"* ./figures/* 2>/dev/null || true
-  mkdir -p "$LOG_ROOT" ./figures
+  mkdir -p "$LOG_ROOT" 
 }
 
 compile_tasks() {
@@ -115,11 +113,6 @@ run_combination() {
     rates+=("${default_rates[i]:-0.300}")
   done
 
-  # Optional: adjust rate if dxtc present
-  if [[ " ${workloads[*]} " == *" dxtc "* ]]; then
-    rates[0]=0.600
-  fi
-
   local comb_name
   comb_name=$(printf "%s" "${workloads[*]}" | tr ' ' '_')
   local comb_log_dir="${LOG_ROOT}/${comb_name}"
@@ -139,7 +132,7 @@ run_combination() {
       
       local sp_dir="${comb_log_dir}/setpoint_$(echo "$power")_$(echo "$sp_line" | tr ' ' '_')"
       mkdir -p "$sp_dir"
-      local scheduler_bin="../Scheduler/bin/scheduler"
+      local scheduler_bin="../scheduler/bin/scheduler"
       local app_bin_dir="../application/bin"
        
       local -a args=("$num_tasks" "$sp_dir" "$solution" "$duration" "$power")
@@ -165,10 +158,6 @@ run_combination() {
 cleanup_tasks
 compile_server
 
-echo "Generated ${#combinations[@]} 3-workload combinations:"
-for comb in "${combinations[@]}"; do
-  echo "  $comb"
-done
 
 for comb in "${combinations[@]}"; do
   read -r -a task_array <<< "$comb"

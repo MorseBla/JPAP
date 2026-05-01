@@ -25,7 +25,7 @@
 #include <fcntl.h>
 #include <sys/file.h>
 
-#include "../Scheduler/shared_header.hpp"
+#include "../scheduler/shared_header.hpp"
 
 static int N = 1333;
 static bool keepRunning = true;
