@@ -1,4 +1,9 @@
+All test in this project are compiled and automatically ran by running shell scripts.
+
+
 Repository Composition:
+
+The instructions to run the tests are in INSTRUCTIONS.txt.
 
 application: contains all workloads used for the experiments in motivation
 

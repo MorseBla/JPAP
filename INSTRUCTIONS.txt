@@ -3,9 +3,11 @@ To run on other (NVIDIA)  devices:
     2. Follow Jetson instructions:
 
 To run on Jetson orin nano:
+0. Buy Jetson Orin Nano - https://www.amazon.com/NVIDIA-Jetson-Orin-Nano-Developer/dp/B0BZJTQ5YP?th=1. Also buy power monitor: https://www.adafruit.com/product/4226?srsltid=AfmBOoo6XxJeb_Gu8-mfHz_G24drN0w-mnuQRTWHWSvE7VadKGMNPQqp
+
 1. Go into system identification and run those tests to get B matrix. Run the plot.py and fit.py scripts to find the coefficients
 2. Go into motivation and run the desired tests
 3. Go into task interrupt directory to run that test
-4. Go into plot to plot the results
+4. Go into plot to plot the results. You will need to move the results from each test into the plot/logs folder.
 
  
